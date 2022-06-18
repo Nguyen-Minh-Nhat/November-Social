@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("./assets/icons/css/all.min.css");
+@layer base {
+  :root {
+    --font-primary: "Segoe UI Historic";
+
+    --color-primary: 107 164 233;
+    --color-primary-bold: 61 112 178;
+    --text-color-bold: 57 58 79;
+    --text-color: 117 122 145;
+
+    /* theme dark */
+    --dark-color-bold: rgb(21, 26, 35);
+    --dark-color-semi-bold: rgb(26, 33, 44);
+    --dark-color-regular: rgb(32, 40, 54);
+    --dark-color-light: rgb(40, 49, 67);
+    --dark-color-very-light: rgb(47, 59, 80);
+    --dark-color-text-bold: rgb(255, 255, 255);
+    --dark-color-text-regular: rgb(162, 165, 185);
+    --dark-color-text-light: rgb(117, 122, 145);
+  }
+  @font-face {
+    font-family: "Segoe UI Historic";
+    src: url("./assets/fonts/Segoe-ui-regular.ttf");
+    font-weight: 400;
+  }
+  input {
+    caret-color: rgb(var(--color-primary-bold));
+  }
+  @font-face {
+    font-family: "Segoe UI Historic";
+    src: url("./assets/fonts/Segoe-ui-semilight.ttf");
+    font-weight: 300;
+  }
+  @font-face {
+    font-family: "Segoe UI Historic";
+    src: url("./assets/fonts/Segoe-ui-semibold.ttf");
+    font-weight: 600;
+  }
+
+  html {
+    font-family: var(--font-primary), system-ui, sans-serif;
+    line-height: 1.3333;
+  }
+
+  ::-ms-reveal {
+    color: var(--color-primary);
+    background-color: var(--color-primary);
+  }
+  .rounded-main {
+    @apply rounded-xl;
+  }
+
+  .button {
+    @apply cursor-pointer rounded-main px-4 py-4 shadow-sm tracking-wide text-[20px] bg-slate-100 flex justify-center;
+  }
+
+  /* .button.primary {
+    @apply bg-primary text-white;
+  } */
+
+  .button.primary:hover {
+    @apply bg-primaryBold;
+  }
+  .button.small {
+    @apply py-2;
+  }
+  .button.large {
+    @apply min-w-[64px];
+  }
+}
