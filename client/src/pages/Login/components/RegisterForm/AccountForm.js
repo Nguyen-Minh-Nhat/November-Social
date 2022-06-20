@@ -20,20 +20,20 @@ const schema = yup.object().shape({
     ),
 });
 
-const AccountForm = ({ handleNextStep }) => {
+const AccountForm = ({ onNextStep, initialData }) => {
   const { t } = useTranslation();
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
+    defaultValues: { ...initialData },
     mode: "onChange",
     resolver: yupResolver(schema),
   });
 
   const onSubmit = (data) => {
-    const { confirmPassword, ...sendData } = data;
-    handleNextStep(sendData);
+    onNextStep(data);
   };
 
   return (
@@ -77,14 +77,7 @@ const AccountForm = ({ handleNextStep }) => {
           </span>
         </div>
       </div>
-      <Button
-        background="bg-primary"
-        type="submit"
-        bg-blue-500
-        shadow="shadow-lg shadow-blue-500/50"
-        text-white
-        disabled={!isValid}
-      >
+      <Button type="submit" primary disabled={!isValid}>
         <span className="font-bold capitalize">{t("continue")}</span>
         {/* <Spinner /> */}
       </Button>

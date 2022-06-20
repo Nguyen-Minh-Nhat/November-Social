@@ -8,17 +8,14 @@ let cx = classNames.bind();
 const Button = ({
   type = "button",
   children,
-  primary,
-  shadow,
-  small,
-  large,
   disabled,
   onClick = () => {
     return;
   },
+  className,
   ...passProps
 }) => {
-  let classes = cx({ primary, small, large, ...passProps });
+  let classes = cx({ ...passProps });
 
   const [variants, setVariants] = useState({});
 
@@ -35,7 +32,7 @@ const Button = ({
       whileHover="hover"
       whileTap="click"
       disabled={disabled}
-      className={`button ${classes} ${shadow} disabled:opacity-40 disabled:cursor-default`}
+      className={`button ${classes} ${className} disabled:opacity-40 disabled:cursor-not-allowed`}
       onClick={onClick}
     >
       {children}

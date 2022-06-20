@@ -32,7 +32,7 @@ const LoginForm = () => {
   };
   return (
     <form
-      autoComplete="new-password"
+      autoComplete="current-password"
       className="w-100 flex flex-col gap-6 text-[18px]"
       onSubmit={handleSubmit(onSubmit)}
     >
@@ -77,14 +77,7 @@ const LoginForm = () => {
           </span>
         </div>
       </div>
-      <Button
-        background="bg-primary"
-        disabled={!isValid}
-        type="submit"
-        bg-blue-500
-        shadow="shadow-lg shadow-blue-500/50"
-        text-white
-      >
+      <Button disabled={!isValid} type="submit" primary>
         <span className="font-bold capitalize">{t("login")}</span>
         {/* <Spinner /> */}
       </Button>

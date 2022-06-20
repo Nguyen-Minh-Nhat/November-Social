@@ -55,16 +55,13 @@
   }
 
   .button {
-    @apply cursor-pointer rounded-main px-4 py-4 shadow-sm tracking-wide text-[20px] bg-slate-100 flex justify-center;
+    @apply cursor-pointer rounded-main px-4 py-4 tracking-wide bg-slate-200  flex justify-center;
   }
 
-  /* .button.primary {
-    @apply bg-primary text-white;
-  } */
-
-  .button.primary:hover {
-    @apply bg-primaryBold;
+  .button.primary {
+    @apply bg-blue-500 hover:enabled:bg-blue-600 shadow-lg shadow-blue-500/50 text-white;
   }
+
   .button.small {
     @apply py-2;
   }

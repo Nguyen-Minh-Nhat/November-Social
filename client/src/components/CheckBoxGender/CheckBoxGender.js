@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import ClickAble from "../ClickAble";
+import Button from "../Button";
 
 const genders = ["female", "male", "other"];
 
@@ -13,24 +13,22 @@ const CheckBoxGender = (props) => {
       </label>
       <div className="flex gap-2">
         {genders.map((gender) => (
-          <ClickAble scale={1.04} key={gender}>
-            <div className="relative">
-              <input
-                type="radio"
-                name="gender"
-                value={gender}
-                className="w-5 h-5 accent-blue-500 absolute top-1/2 -translate-y-1/2 right-4 peer"
-                id={gender}
-                {...props.register("gender")}
-              />
-              <label
-                className="bg-slate-200 dark:bg-dark-regular border border-transparent peer-checked:border-primary flex justify-between capitalize items-center font-bold p-4 rounded-lg text-slate-500 dark:text-dark-textRegular cursor-pointer"
-                htmlFor={gender}
-              >
-                {gender}
-              </label>
-            </div>
-          </ClickAble>
+          <Button key={gender} flex-1 p-0 relative w-full bg-transparent>
+            <input
+              type="radio"
+              name="gender"
+              value={gender}
+              className="w-5 h-5 accent-blue-500 absolute top-1/2 -translate-y-1/2 right-4 peer"
+              id={gender}
+              {...props.register("gender")}
+            />
+            <label
+              className="bg-slate-200 w-full hover:border-primary dark:bg-dark-regular border border-transparent peer-checked:border-primary flex justify-between rounded-xl p-4 items-center capitalize  font-bold text-slate-500  dark:text-dark-textRegular cursor-pointer"
+              htmlFor={gender}
+            >
+              {gender}
+            </label>
+          </Button>
         ))}
       </div>
     </div>

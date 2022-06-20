@@ -1,13 +1,13 @@
 import { motion } from "framer-motion";
 import React from "react";
 
-const ClickAble = ({ children, scale = 1.2 }) => {
+const ClickAble = ({ children, scale = 1.2, disabledClick }) => {
   const variants = {
     hover: {
       scale,
     },
     click: {
-      scale: 0.8,
+      scale: disabledClick ? scale : 0.8,
     },
   };
 
