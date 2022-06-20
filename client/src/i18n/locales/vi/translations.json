@@ -2,6 +2,7 @@
   "hello": "Xin chào",
   "login to": "đăng nhập",
   "login": "đăng nhập",
+  "Login": "Đăng nhập",
   "account": "tài khoản",
   "Password": "Mật khẩu",
   "Don't have an account": "Không có $t(account)",
@@ -20,5 +21,13 @@
   "Create new account": "Tạo tài khoản mới",
   "Email is a required field": "Email không được bỏ trống",
   "Email must be a valid email": "Email không đúng đinh dạng",
-  "Password is a required field": "Mật khẩu không được bỏ trống "
+  "Password is a required field": "Mật khẩu không được bỏ trống ",
+  "register": "đăng ký",
+  "Register": "Đăng ký",
+  "Already have an account": "Đã có tài khoản",
+  "Confirm password": "Xác nhận mật khẩu",
+  "Password and confirm password does not match": "Mật khẩu không trùng khớp",
+  "continue": "tiếp tục",
+  "First name": "Họ",
+  "Last name": "Tên"
 }

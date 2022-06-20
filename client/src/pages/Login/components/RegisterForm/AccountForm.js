@@ -1,22 +1,26 @@
-import React, { useMemo } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import Button from "../../../components/Button";
-import InputField from "../../../components/InputField";
-import Spinner from "../../../components/Spinner";
-import { useTranslation } from "react-i18next";
+import InputField from "../../../../components/InputField";
+import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-
+import { useTranslation } from "react-i18next";
+import Button from "../../../../components/Button";
 const schema = yup.object().shape({
   email: yup
     .string()
     .email("Email must be a valid email")
     .required("Email is a required field"),
   password: yup.string().required("Password is a required field"),
+  confirmPassword: yup
+    .string()
+    .oneOf(
+      [yup.ref("password"), null],
+      "Password and confirm password does not match",
+    ),
 });
 
-const LoginForm = () => {
+const AccountForm = ({ handleNextStep }) => {
   const { t } = useTranslation();
   const {
     register,
@@ -28,13 +32,14 @@ const LoginForm = () => {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    const { confirmPassword, ...sendData } = data;
+    handleNextStep(sendData);
   };
+
   return (
     <form
-      autoComplete="new-password"
-      className="w-100 flex flex-col gap-6 text-[18px]"
       onSubmit={handleSubmit(onSubmit)}
+      className="account flex flex-col gap-6"
     >
       {/* email */}
       <InputField
@@ -55,43 +60,38 @@ const LoginForm = () => {
         register={register}
         error={errors.password}
       />
-
-      {/* {checkbox field} */}
-      <div className="flex justify-between">
-        <div className="text-left flex gap-2 items-center">
-          <input
-            type="checkbox"
-            id="checkbok"
-            className="accent-blue-400 w-5 h-5 text-white cursor-pointer outline-none before:text-blue-500"
-          />
-          <label
-            htmlFor="checkbok"
-            className="font-bold cursor-pointer text-textBold dark:text-dark-textRegular"
-          >
-            {t("Remember me")}
-          </label>
-        </div>
-        <div className="text-left flex gap-2 items-center">
-          <span className="text-primary font-bold cursor-pointer">
-            {t("Forgot password")}?
+      {/* confirm password */}
+      <InputField
+        label={t("Confirm password")}
+        placeholder={t("Confirm password")}
+        type="password"
+        name="confirmPassword"
+        register={register}
+        error={errors.confirmPassword}
+      />
+      <div>
+        <div className="relative w-full flex justify-center text-[14px]">
+          <div className="h-[0.1px] bg-primary/30 absolute top-1/2 z-0 left-0 w-full"></div>
+          <span className="p-2 bg-white z-10 text-textColorPrimary/80 dark:bg-dark-veryLight dark:text-dark-textRegular">
+            {t("Next step")}
           </span>
         </div>
       </div>
       <Button
         background="bg-primary"
-        disabled={!isValid}
         type="submit"
         bg-blue-500
         shadow="shadow-lg shadow-blue-500/50"
         text-white
+        disabled={!isValid}
       >
-        <span className="font-bold capitalize">{t("login")}</span>
+        <span className="font-bold capitalize">{t("continue")}</span>
         {/* <Spinner /> */}
       </Button>
     </form>
   );
 };
 
-LoginForm.propTypes = {};
+AccountForm.propTypes = {};
 
-export default LoginForm;
+export default AccountForm;

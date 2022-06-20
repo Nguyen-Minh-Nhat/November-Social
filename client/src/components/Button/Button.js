@@ -2,24 +2,20 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames/bind";
 import { motion } from "framer-motion";
+import { clickAble } from "../../assets/animations";
 let cx = classNames.bind();
-
-const initialVariants = {
-  hover: {
-    scale: 1.04,
-  },
-  click: {
-    scale: 0.8,
-  },
-};
 
 const Button = ({
   type = "button",
   children,
   primary,
+  shadow,
   small,
   large,
   disabled,
+  onClick = () => {
+    return;
+  },
   ...passProps
 }) => {
   let classes = cx({ primary, small, large, ...passProps });
@@ -29,7 +25,7 @@ const Button = ({
   useEffect(() => {
     if (disabled) {
       setVariants({});
-    } else setVariants(initialVariants);
+    } else setVariants(clickAble);
   }, [disabled]);
 
   return (
@@ -39,7 +35,8 @@ const Button = ({
       whileHover="hover"
       whileTap="click"
       disabled={disabled}
-      className={`button ${classes} disabled:opacity-40 disabled:cursor-default `}
+      className={`button ${classes} ${shadow} disabled:opacity-40 disabled:cursor-default`}
+      onClick={onClick}
     >
       {children}
     </motion.button>

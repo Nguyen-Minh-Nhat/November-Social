@@ -18,7 +18,9 @@ const InputField = (props) => {
         id={props.label}
         name={props.name}
         {...props.register(`${props.name}`)}
-        className="bg-slate-100 dark:bg-dark-light min-h-[44px] px-4 dark:text-dark-textRegular placeholder:text-dark-textLight py-4 rounded-main outline-none border border-transparent focus-within:border-primary outline-[0.1px]"
+        className={`bg-slate-100 dark:bg-dark-light min-h-[44px] px-4 dark:text-dark-textRegular placeholder:opacity-50 py-4 rounded-main outline-none border border-transparent focus-within:border-primary outline-[0.1px] ${
+          props.error ? "border-red-500 focus-within:border-red-500" : ""
+        }`}
         placeholder={props.placeholder}
       />
       {props.error ? (
