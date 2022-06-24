@@ -1,11 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import InputField from "../../../../components/InputField";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslation } from "react-i18next";
-import Button from "../../../../components/Button";
+
+import InputField from "../../../../../components/InputField";
+import Button from "../../../../../components/Button";
+
 const schema = yup.object().shape({
   email: yup
     .string()
@@ -69,13 +71,16 @@ const AccountForm = ({ onNextStep, initialData }) => {
         register={register}
         error={errors.confirmPassword}
       />
-      <div>
-        <div className="relative w-full flex justify-center text-[14px]">
-          <div className="h-[0.1px] bg-primary/30 absolute top-1/2 z-0 left-0 w-full"></div>
-          <span className="p-2 bg-white z-10 text-textColorPrimary/80 dark:bg-dark-veryLight dark:text-dark-textRegular">
-            {t("Next step")}
-          </span>
-        </div>
+
+      <div className="relative w-full flex justify-center text-[14px]">
+        <div className="absolute top-1/2 left-0 z-0 w-full h-[0.1px] bg-primary/30 "></div>
+        <span
+          className="z-10 p-2 
+        bg-white dark:bg-dark-very-light 
+          text-text-color-primary/80 dark:text-dark-text-regular"
+        >
+          {t("Account")}
+        </span>
       </div>
       <Button type="submit" primary disabled={!isValid}>
         <span className="font-bold capitalize">{t("continue")}</span>

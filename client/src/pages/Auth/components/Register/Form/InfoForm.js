@@ -5,11 +5,10 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslation } from "react-i18next";
 
-import InputField from "../../../../components/InputField";
-import CheckBoxGender from "../../../../components/CheckBoxGender/CheckBoxGender";
-import Button from "../../../../components/Button";
-
-import DropdownDatePicker from "../../../../components/DropdownDatePicker";
+import InputField from "../../../../../components/InputField";
+import DropdownDatePicker from "../../../../../components/DropdownDatePicker";
+import CheckBoxGender from "../../../../../components/CheckBoxGender/CheckBoxGender";
+import Button from "../../../../../components/Button";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is a required field"),
@@ -21,7 +20,7 @@ const schema = yup.object().shape({
     .required(),
 });
 
-const InforForm = ({ onBackStep, onNextStep, initialData }) => {
+const InfoForm = ({ onBackStep, onNextStep, initialData }) => {
   const { t } = useTranslation();
   const [date, setDate] = useState();
   const {
@@ -32,7 +31,7 @@ const InforForm = ({ onBackStep, onNextStep, initialData }) => {
     formState: { errors, isValid },
   } = useForm({
     defaultValues: { ...initialData },
-    mode: "onChange",
+    mode: "all",
     resolver: yupResolver(schema),
   });
 
@@ -45,7 +44,7 @@ const InforForm = ({ onBackStep, onNextStep, initialData }) => {
   };
 
   useEffect(() => {
-    setValue("birthDate", date);
+    setValue("birthDate", date, { shouldValidate: true });
   }, [date]);
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
@@ -76,15 +75,17 @@ const InforForm = ({ onBackStep, onNextStep, initialData }) => {
       />
       <CheckBoxGender register={register} />
 
-      <div>
-        <div className="relative w-full flex justify-center text-[14px]">
-          <div className="h-[0.1px] bg-primary/30 absolute top-1/2 z-0 left-0 w-full"></div>
-          <span className="p-2 bg-white z-10 text-textColorPrimary/80 dark:bg-dark-veryLight dark:text-dark-textRegular">
-            {t("Next step")}
-          </span>
-        </div>
+      <div className="relative w-full flex justify-center text-[14px]">
+        <div className="absolute top-1/2 left-0 z-0 w-full h-[0.1px] bg-primary/30 "></div>
+        <span
+          className="p-2 z-10 
+        bg-white dark:bg-dark-very-light
+          text-text-color-primary/80 dark:text-dark-text-regular"
+        >
+          {t("Profile info")}
+        </span>
       </div>
-      <div className="flex w-full gap-3 justify-between">
+      <div className="w-full flex justify-between gap-3">
         <Button type="button" flex-1 primary onClick={handleBackStep}>
           <span className="font-bold capitalize">
             <i className="fa-solid fa-angle-left"></i> {t("back")}
@@ -102,6 +103,6 @@ const InforForm = ({ onBackStep, onNextStep, initialData }) => {
   );
 };
 
-InforForm.propTypes = {};
+InfoForm.propTypes = {};
 
-export default InforForm;
+export default InfoForm;

@@ -1,8 +1,1 @@
-<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
- <g>
-  <title>Layer 1</title>
-  <text fill="#000000" x="341.6" y="258" id="svg_4" stroke-width="0" font-size="24" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" stroke="#000" transform="matrix(4.59135 0 0 4.43567 -1227.06 -863.496)">N</text>
-  <text fill="#007fff" stroke-width="0" x="236.5385" y="264.73398" id="svg_5" font-size="24" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" transform="matrix(4.98536 0 0 4.40955 -873.683 -886.503)">11</text>
- </g>
-
-</svg>
+<svg width="48" height="48" viewBox="0 0 48 48">    <path class="vi-primary" d="M16,32l3,3L37,17l-3-3Z" style="fill: rgb(61, 112, 178);"></path><path class="vi-accent" d="M22,32l-3,3-8-8,3-3Z" style="fill: rgb(12, 0, 88);"></path></svg>

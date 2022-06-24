@@ -2,13 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import Button from "../Button";
+import { useTranslation } from "react-i18next";
 
 const genders = ["female", "male", "other"];
 
 const CheckBoxGender = (props) => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-left font-bold text-textBold dark:text-dark-textRegular">
+      <label className="text-left font-bold text-light-text-bold dark:text-dark-text-regular">
         {"Gender"}
       </label>
       <div className="flex gap-2">
@@ -23,10 +25,10 @@ const CheckBoxGender = (props) => {
               {...props.register("gender")}
             />
             <label
-              className="bg-slate-200 w-full hover:border-primary dark:bg-dark-regular border border-transparent peer-checked:border-primary flex justify-between rounded-xl p-4 items-center capitalize  font-bold text-slate-500  dark:text-dark-textRegular cursor-pointer"
+              className=" flex justify-between w-full bg-slate-200 hover:border-primary dark:bg-dark-regular border border-transparent peer-checked:border-primary rounded-xl p-4 items-center capitalize  font-bold text-light-text-regular  dark:text-dark-text-regular cursor-pointer"
               htmlFor={gender}
             >
-              {gender}
+              {t(gender)}
             </label>
           </Button>
         ))}

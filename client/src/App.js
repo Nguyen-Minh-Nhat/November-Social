@@ -8,7 +8,7 @@ import PublicRoutes from "./routes/PublicRoutes";
 const isLogged = false;
 function App() {
   return (
-    <div className="App h-screen w-screen flex dark:bg-dark-light">
+    <div className="App h-screen w-screen flex dark:bg-dark-very-light overflow-hidden">
       <I18n />
       <Routes>
         <Route element={<PublicRoutes isLogged={isLogged} />}>

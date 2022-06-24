@@ -13,7 +13,7 @@
     --text-color: 117 122 145;
 
     /* theme dark */
-    --dark-color-bold: rgb(21, 26, 35);
+    /* --dark-color-bold: rgb(21, 26, 35);
     --dark-color-semi-bold: rgb(26, 33, 44);
     --dark-color-regular: rgb(32, 40, 54);
     --dark-color-light: rgb(40, 49, 67);
@@ -21,6 +21,8 @@
     --dark-color-text-bold: rgb(255, 255, 255);
     --dark-color-text-regular: rgb(162, 165, 185);
     --dark-color-text-light: rgb(117, 122, 145);
+    --dark-color-border: rgb(59, 73, 99); */
+    --dark-color-placeholder: rgb(78, 97, 131);
   }
   @font-face {
     font-family: "Segoe UI Historic";
@@ -59,7 +61,7 @@
   }
 
   .button.primary {
-    @apply bg-blue-500 hover:enabled:bg-blue-600 shadow-lg shadow-blue-500/50 text-white;
+    @apply bg-blue-500 hover:enabled:bg-blue-600  text-white;
   }
 
   .button.small {
@@ -67,5 +69,13 @@
   }
   .button.large {
     @apply min-w-[64px];
+  }
+}
+
+@layer utilities {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 }

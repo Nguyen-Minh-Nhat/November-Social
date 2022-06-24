@@ -1,12 +1,11 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
-import Button from "../../../components/Button";
-import InputField from "../../../components/InputField";
-import Spinner from "../../../components/Spinner";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import InputField from "../../../../../components/InputField";
+import Button from "../../../../../components/Button";
 
 const schema = yup.object().shape({
   email: yup
@@ -16,7 +15,7 @@ const schema = yup.object().shape({
   password: yup.string().required("Password is a required field"),
 });
 
-const LoginForm = () => {
+const LoginForm = ({ setForgotPassword }) => {
   const { t } = useTranslation();
   const {
     register,
@@ -33,7 +32,7 @@ const LoginForm = () => {
   return (
     <form
       autoComplete="current-password"
-      className="w-100 flex flex-col gap-6 text-[18px]"
+      className="w-100 flex flex-col gap-6"
       onSubmit={handleSubmit(onSubmit)}
     >
       {/* email */}
@@ -59,19 +58,36 @@ const LoginForm = () => {
       {/* {checkbox field} */}
       <div className="flex justify-between">
         <div className="text-left flex gap-2 items-center">
-          <input
-            type="checkbox"
-            id="checkbok"
-            className="accent-blue-400 w-5 h-5 text-white cursor-pointer outline-none before:text-blue-500"
-          />
+          <label htmlFor="checkbox" className="relative cursor-pointer">
+            <input
+              type="checkbox"
+              id="checkbox"
+              className="appearance-none w-6 h-6 rounded-md 
+            bg-slate-100 dark:bg-slate-500 
+              border dark:border-dark-border text-white  
+              cursor-pointer checked:bg-primary dark:checked:bg-primary transition-all peer"
+            />
+
+            <i
+              className="fa-solid fa-check 
+              absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] 
+              text-lg font-bold leading-[10px] text-transparent 
+            peer-checked:text-white transition-all"
+            ></i>
+          </label>
+
           <label
-            htmlFor="checkbok"
-            className="font-bold cursor-pointer text-textBold dark:text-dark-textRegular"
+            htmlFor="checkbox"
+            className="font-bold cursor-pointer 
+          text-light-text-regular dark:text-dark-text-regular"
           >
             {t("Remember me")}
           </label>
         </div>
-        <div className="text-left flex gap-2 items-center">
+        <div
+          className="text-left flex gap-2 items-center"
+          onClick={() => setForgotPassword(true)}
+        >
           <span className="text-primary font-bold cursor-pointer">
             {t("Forgot password")}?
           </span>

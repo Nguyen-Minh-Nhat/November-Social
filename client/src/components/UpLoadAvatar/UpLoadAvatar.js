@@ -2,9 +2,17 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import images from "../../assets/images";
 import Button from "../Button";
+import { motion } from "framer-motion";
 
-const UpLoadAvatar = ({ setAvatarSelected, initialData }) => {
-  const [previewImage, setPreviewImage] = useState(initialData);
+const UpLoadAvatar = ({ setAvatarSelected, initialImage }) => {
+  const [previewImage, setPreviewImage] = useState(initialImage);
+
+  useEffect(() => {
+    return () => {
+      if (previewImage !== initialImage) URL.revokeObjectURL(previewImage);
+    };
+  }, [previewImage]);
+
   const handleUpLoad = (e) => {
     const file = e.target.files[0];
     if (file && file["type"].split("/")[0] === "image") {
@@ -22,8 +30,11 @@ const UpLoadAvatar = ({ setAvatarSelected, initialData }) => {
           : "dark:border-slate-600 border-slate-400"
       }  rounded-full relative`}
     >
-      <div className="w-32 h-32 bg-slate-500 dark:bg-white rounded-full overflow-hidden">
-        <img
+      <div className="w-32 h-32 bg-dark-very-light dark:bg-white rounded-full overflow-hidden">
+        <motion.img
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.5 }}
           src={previewImage || images.defaultAvatar}
           alt=""
           className="w-full h-full block object-cover"
@@ -41,7 +52,7 @@ const UpLoadAvatar = ({ setAvatarSelected, initialData }) => {
         <Button p-0 w-full h-full bg-transparent>
           <label
             htmlFor="file"
-            className="rounded-full w-full h-full flex justify-center items-center border-4  dark:border-dark-light bg-slate-400 hover:bg-primaryBold cursor-pointer transition-all text-primaryBold hover:text-white"
+            className="rounded-full w-full h-full flex justify-center items-center border-4  dark:border-dark-light bg-slate-400 hover:bg-primary-bold cursor-pointer transition-all text-primary-bold hover:text-white"
           >
             <i className="fa-solid fa-plus "></i>
           </label>

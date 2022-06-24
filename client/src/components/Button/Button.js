@@ -16,7 +16,6 @@ const Button = ({
   ...passProps
 }) => {
   let classes = cx({ ...passProps });
-
   const [variants, setVariants] = useState({});
 
   useEffect(() => {

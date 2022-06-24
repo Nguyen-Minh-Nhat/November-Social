@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import React, { useEffect, useState } from "react";
 import { date } from "yup/lib/locale";
 import ClickAble from "../ClickAble";
@@ -44,15 +45,14 @@ const DropdownDatePicker = ({ setDate, initialDate }) => {
   }, [month, day, year]);
 
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-left font-bold text-textBold dark:text-dark-textRegular">
-        {" "}
-        Date of birth
+    <div className="flex flex-col gap-1">
+      <label className="text-left font-bold text-light-text-bold dark:text-dark-text-regular">
+        {t("Date of birth")}
       </label>
-      <div className="flex gap-1">
+      <div className="flex gap-2">
         <ClickAble disabledClick scale={1.04}>
           <SelectBox
-            title="Month"
+            title="month"
             min={1}
             max={12}
             value={month}
@@ -61,7 +61,7 @@ const DropdownDatePicker = ({ setDate, initialDate }) => {
         </ClickAble>
         <ClickAble disabledClick scale={1.04}>
           <SelectBox
-            title="Day"
+            title="day"
             min={1}
             max={maxDay}
             value={day}
@@ -70,7 +70,7 @@ const DropdownDatePicker = ({ setDate, initialDate }) => {
         </ClickAble>
         <ClickAble disabledClick scale={1.04}>
           <SelectBox
-            title="Year"
+            title="year"
             min={1900}
             value={year}
             max={currentDate.getFullYear()}
