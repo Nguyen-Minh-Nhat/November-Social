@@ -2,13 +2,17 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames/bind";
 import { motion } from "framer-motion";
+
+import Spinner from "../Spinner";
 import { clickAble } from "../../assets/animations";
+
 let cx = classNames.bind();
 
 const Button = ({
   type = "button",
   children,
   disabled,
+  isLoading,
   onClick = () => {
     return;
   },
@@ -19,10 +23,10 @@ const Button = ({
   const [variants, setVariants] = useState({});
 
   useEffect(() => {
-    if (disabled) {
+    if (disabled || isLoading) {
       setVariants({});
     } else setVariants(clickAble);
-  }, [disabled]);
+  }, [disabled, isLoading]);
 
   return (
     <motion.button
@@ -34,7 +38,7 @@ const Button = ({
       className={`button ${classes} ${className} disabled:opacity-40 disabled:cursor-not-allowed`}
       onClick={onClick}
     >
-      {children}
+      {isLoading ? <Spinner /> : children}
     </motion.button>
   );
 };

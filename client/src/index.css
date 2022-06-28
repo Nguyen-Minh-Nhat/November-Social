@@ -52,12 +52,9 @@
     color: var(--color-primary);
     background-color: var(--color-primary);
   }
-  .rounded-main {
-    @apply rounded-xl;
-  }
 
   .button {
-    @apply cursor-pointer rounded-main px-4 py-4 tracking-wide bg-slate-200  flex justify-center;
+    @apply cursor-pointer rounded-lg px-4 py-4 tracking-wide bg-slate-200  flex justify-center shadow-md;
   }
 
   .button.primary {
@@ -68,7 +65,7 @@
     @apply py-2;
   }
   .button.large {
-    @apply min-w-[64px];
+    @apply max-h-[55.33px] text-[18px];
   }
 }
 

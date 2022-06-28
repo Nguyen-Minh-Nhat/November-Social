@@ -46,7 +46,7 @@ const AvatarForm = ({ onBackStep, onFinish, initialData }) => {
         </span>
       </div>
       <div className="mt-auto w-full flex justify-between gap-3">
-        <Button type="button" flex-1 primary onClick={handleBackStep}>
+        <Button type="button" flex-1 primary large onClick={handleBackStep}>
           <span className="font-bold capitalize">
             <i className="fa-solid fa-angle-left"></i> {t("back")}
           </span>
@@ -55,14 +55,14 @@ const AvatarForm = ({ onBackStep, onFinish, initialData }) => {
         <Button
           type="submit"
           primary
-          flex-1
+          large
+          className="flex-1"
           onClick={() => onFinish(avatarSelected)}
         >
           <span className="font-bold capitalize">
             {avatarSelected ? t("next") : t("skip")}{" "}
             <i className="fa-solid fa-angle-right"></i>
           </span>
-          {/* <Spinner /> */}
         </Button>
       </div>
     </div>

@@ -36,7 +36,7 @@ const Modal = ({ show, setShow, children }) => {
                 className="absolute top-1 right-1 w-8 h-8
                 flex items-center justify-center
                 rounded-full
-              bg-slate-200 dark:bg-dark-light
+              bg-slate-200 dark:bg-dark-regular
               text-light-text-light dark:text-dark-text-regular
                 cursor-pointer"
               >

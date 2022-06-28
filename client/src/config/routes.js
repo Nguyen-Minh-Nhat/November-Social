@@ -1,5 +1,6 @@
 const routes = {
   auth: "/auth",
+  userActive: "auth/activate/:data",
   home: "/",
 };
 

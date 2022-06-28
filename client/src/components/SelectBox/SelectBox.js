@@ -16,7 +16,11 @@ const SelectBox = ({ title, min, max, value, onChange }) => {
     <select
       id="countries"
       value={value}
-      className="flex flex-1 flex-col gap-1 w-full max-h-[57.99px] border outline-none rounded-xl bg-gray-200 border-gray-300 p-4 cursor-pointer focus:ring-primary focus:border-blue-500 dark:bg-dark-regular  dark:border-gray-600 dark:placeholder-gray-400 dark:text-dark-text-regular capitalize  font-bold text-light-text-regular hover:border-primary dark:hover:border-primary"
+      className="flex flex-1 flex-col gap-1 w-full max-h-[53.33px] rounded-xl
+      bg-gray-200  p-4 dark:bg-dark-regular 
+      outline-none border border-gray-300 dark:border-dark-border 
+      font-bold capitalize dark:text-dark-text-regular text-light-text-regular dark:placeholder-gray-400 
+      cursor-pointer focus:ring-primary focus:border-blue-500 dark:hover:border-primary hover:border-primary"
       onChange={(e) => onChange(e.target.value)}
     >
       <option className="capitalize">{t(title)}</option>

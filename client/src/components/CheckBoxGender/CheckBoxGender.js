@@ -25,7 +25,11 @@ const CheckBoxGender = (props) => {
               {...props.register("gender")}
             />
             <label
-              className=" flex justify-between w-full bg-slate-200 hover:border-primary dark:bg-dark-regular border border-transparent peer-checked:border-primary rounded-xl p-4 items-center capitalize  font-bold text-light-text-regular  dark:text-dark-text-regular cursor-pointer"
+              className="w-full flex justify-between items-center rounded-xl p-4
+              bg-slate-200 dark:bg-dark-regular
+              border border-gray-300 dark:border-dark-border 
+              capitalize font-bold text-light-text-regular dark:text-dark-text-regular 
+              cursor-pointer peer-checked:border-primary-bold hover:border-primary"
               htmlFor={gender}
             >
               {t(gender)}

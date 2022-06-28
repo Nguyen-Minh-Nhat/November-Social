@@ -1,16 +1,17 @@
-import React, { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-
 import { AnimatePresence } from "framer-motion";
+import { useState } from "react";
+
+import { toast } from "react-toastify";
+import authApi from "../../../../../api/authApi";
 import AnimateSlide from "../../../../../components/Animate/AnimateSlide";
 import AccountForm from "./AccountForm";
-import InfoForm from "./InfoForm";
 import AvatarForm from "./AvatarForm";
 import CompleteForm from "./CompleteForm";
+import InfoForm from "./InfoForm";
 
 const RegisterForm = () => {
   const [stepper, setStepper] = useState(0);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState({
     firstName: "",
     lastName: "",
@@ -35,10 +36,35 @@ const RegisterForm = () => {
     setStepper((prev) => --prev);
   };
 
-  const handleFinish = (data) => {
-    setStepper((prev) => ++prev);
-    data = { ...userData, ...data };
-    console.log(data);
+  const handleFinish = async (data) => {
+    try {
+      data = { ...userData, ...data };
+      const formData = new FormData();
+      formData.append("name", data.firstName + " " + data.lastName);
+      formData.append("email", data.email);
+      formData.append("password", data.password);
+      formData.append("birthDate", data.birthDate);
+      formData.append("avatar", data.avatar);
+      await authApi.register(formData);
+      setStepper((prev) => ++prev);
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-left",
+      });
+    }
+  };
+
+  const handleCheckEmail = async (data) => {
+    setIsLoading(true);
+    try {
+      await authApi.checkMail({ email: data.email });
+      handleNextStep(data);
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-left",
+      });
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -49,7 +75,7 @@ const RegisterForm = () => {
           className="absolute top-1/2 left-0 -translate-y-1/2 z-0
           flex justify-center items-center
           w-full h-[10px] 
-        bg-slate-300 dark:bg-[#3e4e69]"
+          bg-slate-300 dark:bg-[#3e4e69]"
         >
           <div className="w-full h-[4px] bg-slate-400 dark:bg-dark-light"></div>
           <div
@@ -64,9 +90,9 @@ const RegisterForm = () => {
             key={step.id}
             className={`w-10 h-10 z-20 flex justify-center items-center
             rounded-full 
-          bg-slate-100 dark:bg-dark-light
-          text-light-text-bold dark:text-dark-text-bold border 
-          border-slate-300 dark:border-dark-border  
+            bg-slate-100 dark:bg-dark-light
+            text-light-text-bold dark:text-dark-text-bold border 
+            border-slate-300 dark:border-dark-border  
             transition-all duration-500 ${
               stepper === step.id ? progressBarStyle.progressing : ""
             } ${stepper > step.id ? progressBarStyle.complete : ""} `}
@@ -85,7 +111,11 @@ const RegisterForm = () => {
           {" "}
           {stepper === 0 && (
             <AnimateSlide>
-              <AccountForm onNextStep={handleNextStep} initialData={userData} />
+              <AccountForm
+                onNextStep={handleCheckEmail}
+                initialData={userData}
+                isLoading={isLoading}
+              />
             </AnimateSlide>
           )}
           {stepper === 1 && (
@@ -122,8 +152,6 @@ const RegisterForm = () => {
     </div>
   );
 };
-
-RegisterForm.propTypes = {};
 
 const stepList = [
   {

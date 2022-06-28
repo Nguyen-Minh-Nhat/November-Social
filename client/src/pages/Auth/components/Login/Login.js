@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../../../../redux/slices/authSlice";
+import jwt_decode from "jwt-decode";
+
+import authApi from "../../../../api/authApi";
 
 import Button from "../../../../components/Button";
 import Modal from "../../../../components/Modal";
@@ -7,9 +12,41 @@ import socials from "../../../../config/socials";
 import ForgotPassword from "../ForgotPassword/ForgotPassword";
 import LoginForm from "./Form/LoginForm";
 
+import { GoogleLogin } from "@react-oauth/google";
+
 const Login = ({ setIsLogin }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [forgotPassword, setForgotPassword] = useState(false);
+
+  const handleLogin = async (data) => {
+    try {
+      const res = await authApi.login(data);
+      handleSuccessLogin(res.data);
+    } catch (error) {
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const handleGoogleLogin = async (res) => {
+    const { email, name, picture, email_verified } = jwt_decode(res.credential);
+    const data = { email, name, picture, email_verified };
+    try {
+      const res = await authApi.googleLogin(data);
+      handleSuccessLogin(res.data);
+    } catch (error) {
+      alert(error.response.data.msg);
+    }
+  };
+
+  const handleSuccessLogin = (data) => {
+    const action = setCredentials({
+      user: data.user,
+      accessToken: data.access_token,
+    });
+    dispatch(action);
+  };
+
   return (
     <div className="min-h-[46px] w-[460px] flex flex-col gap-4">
       <div
@@ -20,11 +57,13 @@ const Login = ({ setIsLogin }) => {
         <span className="text-primary"> {process.env.REACT_APP_NAME}</span>
       </div>
       <div className="flex justify-center gap-6">
-        {socials.map((method) => (
-          <Button key={method.name} w-16 h-14>
-            <span className="text-[20px]">{method.icon}</span>
-          </Button>
-        ))}
+        {socials.map((method) => {
+          return (
+            <Button key={method.name} onClick={handleGoogleLogin} w-16 h-14>
+              <span className="text-[20px]">{method.icon}</span>
+            </Button>
+          );
+        })}
       </div>
       <div>
         <div className="relative w-full flex justify-center text-[14px]">
@@ -38,7 +77,7 @@ const Login = ({ setIsLogin }) => {
           </span>
         </div>
       </div>
-      <LoginForm setForgotPassword={setForgotPassword} />
+      <LoginForm onSubmit={handleLogin} setForgotPassword={setForgotPassword} />
       <div className="text-left text-[16px]">
         <span className="text-light-text-bold dark:text-dark-text-light">
           {t("Don't have an account")}?{" "}
@@ -53,6 +92,7 @@ const Login = ({ setIsLogin }) => {
       <Modal show={forgotPassword} setShow={setForgotPassword}>
         <ForgotPassword />
       </Modal>
+      <GoogleLogin onSuccess={handleGoogleLogin} onError={handleGoogleLogin} />
     </div>
   );
 };

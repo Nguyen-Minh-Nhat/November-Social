@@ -49,7 +49,7 @@ const UpLoadAvatar = ({ setAvatarSelected, initialImage }) => {
           className="absolute invisible"
           onChange={(e) => handleUpLoad(e)}
         />
-        <Button p-0 w-full h-full bg-transparent>
+        <Button p-0 w-full h-full bg-transparent shadow-none>
           <label
             htmlFor="file"
             className="rounded-full w-full h-full flex justify-center items-center border-4  dark:border-dark-light bg-slate-400 hover:bg-primary-bold cursor-pointer transition-all text-primary-bold hover:text-white"

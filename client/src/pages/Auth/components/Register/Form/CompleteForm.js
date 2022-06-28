@@ -1,5 +1,3 @@
-import React from "react";
-import PropTypes from "prop-types";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
@@ -11,7 +9,7 @@ const CompleteForm = (props) => {
   return (
     <div className="h-[444.56px] flex flex-col gap-6">
       <div
-        className="flex-1 flex flex-col gap-4 justify-center items-center 
+        className="p-4 flex-1 flex flex-col gap-4 justify-center items-center 
         rounded-xl bg-slate-200 dark:bg-dark-regular"
       >
         <div className="w-36 h-36 p-4 rounded-xl">
@@ -21,7 +19,7 @@ const CompleteForm = (props) => {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 1 }}
-          className=""
+          className="text-center"
         >
           <span className="font-bold text-primary-bold dark:text-primary">
             {t("Congrats, you successfully created your account")}.
@@ -44,7 +42,7 @@ const CompleteForm = (props) => {
           {t("Completed")}
         </span>
       </div>
-      <Button type="submit" primary>
+      <Button type="submit" primary large>
         <span className="font-bold capitalize">{t("go to login")}</span>
       </Button>
     </div>

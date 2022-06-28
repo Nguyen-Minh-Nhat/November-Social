@@ -45,6 +45,7 @@ const InfoForm = ({ onBackStep, onNextStep, initialData }) => {
 
   useEffect(() => {
     setValue("birthDate", date, { shouldValidate: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
@@ -90,13 +91,11 @@ const InfoForm = ({ onBackStep, onNextStep, initialData }) => {
           <span className="font-bold capitalize">
             <i className="fa-solid fa-angle-left"></i> {t("back")}
           </span>
-          {/* <Spinner /> */}
         </Button>
         <Button type="submit" primary disabled={!isValid} flex-1>
           <span className="font-bold capitalize">
             {t("next")} <i className="fa-solid fa-angle-right"></i>
           </span>
-          {/* <Spinner /> */}
         </Button>
       </div>
     </form>

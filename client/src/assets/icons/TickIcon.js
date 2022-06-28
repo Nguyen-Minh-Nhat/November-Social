@@ -13,7 +13,7 @@ const TickIcon = (props) => {
       x="0px"
       y="0px"
       viewBox="0 0 100.353 100.353"
-      className="fill-green-500 "
+      className={`fill-green-500 ${props.className} `}
     >
       <g>
         <path

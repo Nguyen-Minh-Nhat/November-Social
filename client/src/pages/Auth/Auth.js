@@ -11,7 +11,7 @@ const AuthPage = (props) => {
   return (
     <motion.div
       transition={transition}
-      className={`w-full flex justify-evenly text-center  
+      className={`w-screen h-screen flex justify-evenly text-center  
       ${isLogin ? "flex-row-reverse" : ""} `}
     >
       <motion.div

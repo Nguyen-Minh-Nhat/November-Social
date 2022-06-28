@@ -22,7 +22,7 @@ const InputField = (props) => {
         className={`min-h-[44px] px-4 py-4 rounded-xl
         bg-slate-200 dark:bg-dark-regular 
         dark:text-dark-text-regular outline-none border 
-        dark:border-dark-border border-gray-300  
+        border-gray-300 dark:border-dark-border   
         placeholder:opacity-75 placeholder:font-light  
         focus-within:border-primary dark:focus-within:border-primary 
         ${

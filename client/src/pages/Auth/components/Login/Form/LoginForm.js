@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
@@ -15,7 +15,7 @@ const schema = yup.object().shape({
   password: yup.string().required("Password is a required field"),
 });
 
-const LoginForm = ({ setForgotPassword }) => {
+const LoginForm = ({ setForgotPassword, onSubmit }) => {
   const { t } = useTranslation();
   const {
     register,
@@ -25,10 +25,6 @@ const LoginForm = ({ setForgotPassword }) => {
     mode: "onChange",
     resolver: yupResolver(schema),
   });
-
-  const onSubmit = (data) => {
-    console.log(data);
-  };
   return (
     <form
       autoComplete="current-password"
@@ -63,7 +59,7 @@ const LoginForm = ({ setForgotPassword }) => {
               type="checkbox"
               id="checkbox"
               className="appearance-none w-6 h-6 rounded-md 
-            bg-slate-100 dark:bg-slate-500 
+              bg-slate-100 dark:bg-slate-500 
               border dark:border-dark-border text-white  
               cursor-pointer checked:bg-primary dark:checked:bg-primary transition-all peer"
             />
@@ -72,14 +68,14 @@ const LoginForm = ({ setForgotPassword }) => {
               className="fa-solid fa-check 
               absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] 
               text-lg font-bold leading-[10px] text-transparent 
-            peer-checked:text-white transition-all"
+              peer-checked:text-white transition-all"
             ></i>
           </label>
 
           <label
             htmlFor="checkbox"
             className="font-bold cursor-pointer 
-          text-light-text-regular dark:text-dark-text-regular"
+            text-light-text-regular dark:text-dark-text-regular"
           >
             {t("Remember me")}
           </label>
@@ -93,9 +89,8 @@ const LoginForm = ({ setForgotPassword }) => {
           </span>
         </div>
       </div>
-      <Button disabled={!isValid} type="submit" primary>
+      <Button disabled={!isValid} type="submit" primary large>
         <span className="font-bold capitalize">{t("login")}</span>
-        {/* <Spinner /> */}
       </Button>
     </form>
   );

@@ -1,6 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 let currentOtpIndex = 0;
-const OtpField = ({ max = 6 }) => {
+const OtpField = ({
+  title,
+  disabled,
+  setValue,
+  onSubmit = () => {},
+  max = 6,
+}) => {
   const [otp, setOtp] = useState(new Array(max).fill(""));
   const [activeOptIndex, setActiveOptIndex] = useState(0);
 
@@ -21,8 +27,14 @@ const OtpField = ({ max = 6 }) => {
       setActiveOptIndex(currentOtpIndex - 1);
     } else if (e.key === "ArrowRight") {
       if (otp[currentOtpIndex]) setActiveOptIndex(currentOtpIndex + 1);
-    } else if (e.key === "ArrowLeft")
+    } else if (e.key === "ArrowLeft") {
       if (otp[currentOtpIndex]) setActiveOptIndex(currentOtpIndex - 1);
+    } else if (e.key === "Enter") {
+      if (currentOtpIndex + 1 === max && otp.filter(String).length === max) {
+        onSubmit();
+      }
+    }
+
     if (exceptThisSymbols.includes(e.key)) e.preventDefault();
   };
 
@@ -56,10 +68,15 @@ const OtpField = ({ max = 6 }) => {
     inputRef.current?.focus();
   }, [activeOptIndex]);
 
+  useEffect(() => {
+    setValue(otp);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [otp]);
+
   return (
     <div className="flex flex-col w-full gap-1">
       <div className="self-start text-light-text-bold dark:text-dark-text-regular">
-        Code
+        {title}
       </div>
       <div className="w-full flex justify-between items-center">
         {otp.map((_, index) => {
@@ -73,10 +90,11 @@ const OtpField = ({ max = 6 }) => {
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={handlePaste}
                 className="w-14 h-14 border rounded-xl outline-none
-              dark:bg-dark-regular bg-slate-200
+                dark:bg-dark-regular bg-slate-200
                 text-center font-semibold text-light-text-bold dark:text-dark-text-regular text-2xl 
-              dark:border-dark-border border-gray-300
-                focus:border-primary-bold focus:dark:border-primary-bold transition"
+                dark:border-dark-border border-gray-300
+                focus:border-primary-bold focus:dark:border-primary-bold transition disabled:cursor-not-allowed"
+                disabled={disabled}
               />
             </React.Fragment>
           );

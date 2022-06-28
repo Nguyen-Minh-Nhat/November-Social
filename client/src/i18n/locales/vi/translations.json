@@ -20,7 +20,7 @@
   "Remember me": "Nhớ tôi",
   "Create new account": "Tạo tài khoản mới",
   "Email is a required field": "Email không được bỏ trống",
-  "Email must be a valid email": "Email không đúng đinh dạng",
+  "Email must be a valid email": "Email không đúng định dạng",
   "Password is a required field": "Mật khẩu không được bỏ trống",
   "First name is a required field": "Họ không được bỏ trống",
   "Last name is a required field": "Tên không được bỏ trống",
@@ -51,5 +51,18 @@
   "day": "ngày",
   "month": "tháng",
   "year": "năm",
-  "go to login": "tới trang đăng nhập"
+  "go to login": "tới trang đăng nhập",
+  "Enter the email address associated with your account, we will send a verification code to your email": "Nhập địa chỉ email được liên kết với tài khoản của bạn, chúng tôi sẽ gửi mã xác minh đến email của bạn",
+  "Send code": "Gửi mã",
+  "Reset": "Đặt lại",
+  "password": "mật khẩu",
+  "Enter the verification code we just sent you on your email address": "Nhập mã xác minh mà chúng tôi vừa gửi vào địa chỉ email của bạn",
+  "Code": "Mã",
+  "verify": "Xác minh",
+  "change password": "đổi mật khẩu",
+  "New password": "Mật khẩu mới",
+  "Confirm new password": "Xác nhận mật khẩu mới",
+  "Set your new password": "Đặt mật khẩu mới",
+  "confirm": "xác nhận",
+  "Your password has been reset successfully": "Mật khẩu của bạn đã được đặt lại thành công"
 }

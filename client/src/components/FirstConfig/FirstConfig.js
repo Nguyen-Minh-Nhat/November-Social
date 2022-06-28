@@ -1,8 +1,11 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-const I18n = () => {
+import useDarkMode from "../../hooks/useDarkMode";
+
+const FirstConfig = () => {
   const { i18n } = useTranslation();
+  const [a, b] = useDarkMode();
+
   useEffect(() => {
     const lang = localStorage.getItem("lang");
     i18n.changeLanguage(lang || "en");
@@ -10,4 +13,4 @@ const I18n = () => {
   return <></>;
 };
 
-export default I18n;
+export default FirstConfig;
