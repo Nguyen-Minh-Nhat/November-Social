@@ -4,7 +4,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import routes from "../../config/routes";
 
 const PrivateRoutes = ({ isLogged }) => {
-  return isLogged ? <Outlet /> : <Navigate to={routes.auth} />; // render route if not login, if already can not render
+  return isLogged ? <Outlet /> : <Navigate to={"/login"} />; // render route if not login, if already can not render
 };
 
 PrivateRoutes.propTypes = {

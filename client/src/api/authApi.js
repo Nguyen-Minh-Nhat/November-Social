@@ -19,8 +19,16 @@ const authApi = {
     const res = await axiosClient.post(URL + "google_login", data);
     return res;
   },
+  facebookLogin: async (data) => {
+    const res = await axiosClient.post(URL + "facebook_login", data);
+    return res;
+  },
   login: async (data) => {
     const res = await axiosClient.post(URL + "login", data);
+    return res;
+  },
+  logout: async () => {
+    const res = await axiosClient.get(URL + "logout");
     return res;
   },
 };

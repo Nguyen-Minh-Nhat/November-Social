@@ -1,7 +1,8 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import RegisterForm from "./Form";
 
-const Register = ({ setIsLogin }) => {
+const Register = () => {
   const { t } = useTranslation();
   return (
     <div
@@ -19,12 +20,9 @@ const Register = ({ setIsLogin }) => {
       <div className="text-left text-[16px]">
         <span className="text-light-text-bold dark:text-dark-text-light">
           {t("Already have an account")}?{" "}
-          <span
-            onClick={() => setIsLogin(true)}
-            className="font-bold text-primary cursor-pointer"
-          >
+          <Link to={"/login"} className="font-bold text-primary cursor-pointer">
             {t("Login")}!!!
-          </span>
+          </Link>
         </span>
       </div>
     </div>

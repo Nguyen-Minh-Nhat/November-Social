@@ -1,24 +1,31 @@
 import { AnimatePresence, motion } from "framer-motion";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import ChangeLanguage from "../../components/ChangeLanguage";
 import ToggleButton from "../../components/ToggleButton";
-import Register from "./components/Register";
 import Login from "./components/Login";
+import Register from "./components/Register";
 
-const AuthPage = (props) => {
-  const [isLogin, setIsLogin] = useState(true);
+const AuthPage = () => {
+  const location = useLocation();
+  const [isLogin, setIsLogin] = useState(location.pathname.includes("/login"));
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setIsLogin(location.pathname.includes("/login"));
+  }, [location.pathname]);
 
   return (
     <motion.div
       transition={transition}
-      className={`w-screen h-screen flex justify-evenly text-center  
-      ${isLogin ? "flex-row-reverse" : ""} `}
+      className={`w-screen h-screen flex text-center relative  
+      ${isLogin ? "justify-end" : "justify-start"} `}
     >
       <motion.div
         layout
         transition={transition}
         className="relative z-90 h-full 
-        flex-1 flex items-center justify-center  
+        w-1/2 flex items-center justify-center  
       dark:bg-dark-very-light"
       >
         <div
@@ -37,7 +44,7 @@ const AuthPage = (props) => {
               animate="visible"
               exit="exit"
             >
-              <Login setIsLogin={setIsLogin} />
+              <Login />
             </motion.div>
           )}
         </AnimatePresence>
@@ -55,24 +62,27 @@ const AuthPage = (props) => {
           )}
         </AnimatePresence>
       </motion.div>
+
       <motion.div
-        initial={{ translateY: "-50%" }}
+        layout
+        variants={topLayerAnimate}
+        transition={transition}
+        animate={!isLogin ? "right" : "left"}
+        className="absolute h-full w-1/2 top-0 z-90 left-0   
+        flex-1 flex justify-center z-30 items-center 
+        bg-primary"
+      ></motion.div>
+      <motion.div
+        initial={{ x: "-50%", y: "-50%" }}
         whileHover={{ scale: 1.2 }}
         whileTap={{
           scale: 0.8,
         }}
-        className="absolute top-1/2 z-90 -translate-y-1/2
-        w-[100px] h-[100px] rounded-full bg-primary    
-        border-8 border-white dark:border-dark-very-light 
-        cursor-pointer"
-        onClick={() => setIsLogin((prev) => !prev)}
-      ></motion.div>
-      <motion.div
-        layout
-        transition={transition}
-        className="h-full   
-        flex-1 flex justify-center items-center 
-        bg-primary"
+        onClick={() => navigate(isLogin ? "/register" : "/login")}
+        className="absolute z-90 top-1/2 left-1/2
+          w-[100px] h-[100px] rounded-full z-40 bg-primary    
+          border-8 border-white dark:border-dark-very-light 
+          cursor-pointer"
       ></motion.div>
     </motion.div>
   );
@@ -84,36 +94,13 @@ const animate = {
   exit: { opacity: 0, scale: 0.5 },
 };
 
+const topLayerAnimate = {
+  left: { x: "0" },
+  right: { x: "100%" },
+};
+
 const transition = {
   duration: 0.5,
 };
 
-AuthPage.propTypes = {};
-
 export default AuthPage;
-
-/* <AnimatePresence>
-          <div>
-            {isLogin && (
-              <motion.div
-                variants={animate}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-              >
-                <LoginSide setIsLogin={setIsLogin} />
-              </motion.div>
-            )}
-
-            {!isLogin && (
-              <motion.div
-                variants={animate}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-              >
-                <RegisterSide setIsLogin={setIsLogin} />
-              </motion.div>
-            )}
-          </div>
-        </AnimatePresence> */
