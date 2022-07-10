@@ -6,7 +6,7 @@ const commentController = require("../controllers/commentController");
 router.post("/create", verifyToken, commentController.create);
 
 //Get all comment of a post
-router.get("/:id", verifyToken, commentController.getAllComment);
+router.get("/:id", verifyToken, commentController.getComments);
 
 //Update a comment
 router.put("/update/:id", verifyToken, commentController.update);

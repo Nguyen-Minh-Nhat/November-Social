@@ -1,7 +1,8 @@
-import React, { useMemo } from "react";
+import React, { useId, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 const SelectBox = ({ title, min, max, value, onChange }) => {
+  const id = useId();
   const { t } = useTranslation();
   const optionList = useMemo(() => {
     const list = [];
@@ -14,7 +15,7 @@ const SelectBox = ({ title, min, max, value, onChange }) => {
   // print list of years to the console:
   return (
     <select
-      id="countries"
+      id={id}
       value={value}
       className="flex flex-1 flex-col gap-1 w-full max-h-[53.33px] rounded-xl
       bg-gray-200  p-4 dark:bg-dark-regular 

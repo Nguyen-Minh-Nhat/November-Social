@@ -1,7 +1,12 @@
 const routes = {
   auth: "/auth",
-  userActive: "auth/activate/:data",
+  login: "/login",
+  register: "/register",
+  userActive: "/activate/:data",
   home: "/",
+  friends: "/friends",
+  photos: "/photos",
+  Cinema: "/cinema",
 };
 
 export default routes;

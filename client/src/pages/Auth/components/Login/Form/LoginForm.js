@@ -1,18 +1,19 @@
-import { useMemo } from "react";
-import PropTypes from "prop-types";
-import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import * as yup from "yup";
-import InputField from "../../../../../components/InputField";
 import Button from "../../../../../components/Button";
+import InputField from "../../../../../components/InputField";
 
 const schema = yup.object().shape({
   email: yup
     .string()
     .email("Email must be a valid email")
     .required("Email is a required field"),
-  password: yup.string().required("Password is a required field"),
+  password: yup
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is a required field"),
 });
 
 const LoginForm = ({ setForgotPassword, onSubmit }) => {

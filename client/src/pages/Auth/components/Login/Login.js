@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import authApi from "../../../../api/authApi";
 import Modal from "../../../../components/Modal";
 import { setCredentials } from "../../../../redux/slices/authSlice";
@@ -13,13 +14,12 @@ const Login = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [forgotPassword, setForgotPassword] = useState(false);
-
   const handleLogin = async (data) => {
     try {
       const res = await authApi.login(data);
       handleSuccessLogin(res.data);
     } catch (error) {
-      console.log(error.response.data.msg);
+      toast.error(error.response?.data?.msg);
     }
   };
 
@@ -71,7 +71,5 @@ const Login = () => {
     </div>
   );
 };
-
-Login.propTypes = {};
 
 export default Login;

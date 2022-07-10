@@ -54,6 +54,7 @@ const EmailForm = (props) => {
         type="submit"
         primary
         disabled={!isValid}
+        isLoading={props.isLoading}
         className="w-full"
         large
       >

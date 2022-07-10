@@ -13,7 +13,10 @@ const success = {
   description:
     "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Exercitationem, ipsum.",
   color: "green-500",
-  redirect: routes.auth,
+  button: {
+    redirect: routes.login,
+    title: "Log in now",
+  },
 };
 
 const fail = {
@@ -21,8 +24,11 @@ const fail = {
   title: "Verification failed.",
   description:
     "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Exercitationem, ipsum.",
-  color: "red-500",
-  redirect: routes.auth,
+  button: {
+    redirect: routes.register,
+
+    title: "Register again",
+  },
 };
 
 const ActiveAccount = () => {
@@ -35,7 +41,7 @@ const ActiveAccount = () => {
   useEffect(() => {
     const activeAccount = async () => {
       try {
-        const res = await authApi.activeAccount({ activation_token: data });
+        await authApi.activeAccount({ activation_token: data });
         setResult(success);
       } catch (e) {
         setResult({ ...fail, description: e.response.data.msg });
@@ -65,10 +71,10 @@ const ActiveAccount = () => {
             primary
             p-3
             onClick={() => {
-              navigate(result.redirect, { replace: true });
+              navigate(result.button.redirect, { replace: true });
             }}
           >
-            <span className="font-bold text-md">{t("Log in now")}</span>
+            <span className="font-bold text-md">{t(result.button.title)}</span>
           </Button>
         </div>
       </div>

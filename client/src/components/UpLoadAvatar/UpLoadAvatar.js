@@ -11,6 +11,7 @@ const UpLoadAvatar = ({ setAvatarSelected, initialImage }) => {
     return () => {
       if (previewImage !== initialImage) URL.revokeObjectURL(previewImage);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previewImage]);
 
   const handleUpLoad = (e) => {

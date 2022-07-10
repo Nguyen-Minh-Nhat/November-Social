@@ -1,20 +1,18 @@
 const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
-    const token = req.header("accessToken");
-    if (!token)
-        return res.json({ success: false, message: "User not log in!" });
-    try {
-        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_CODE);
-        req.body.userID = decoded.userID;
-        next();
-    } catch (error) {
-        return res.json({
-            success: false,
-            message: "User not log in1!",
-            error,
-        });
-    }
-};
+  try {
+    const token = req.header("Authorization");
+    if (!token) return res.status(400).json({ msg: "Invalid Authentication." });
 
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+      if (err) return res.status(400).json({ msg: "Invalid Authentication." });
+
+      req.user = user;
+      next();
+    });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
+};
 module.exports = verifyToken;

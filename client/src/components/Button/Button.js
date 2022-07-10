@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+
 import classNames from "classnames/bind";
 import { motion } from "framer-motion";
 
@@ -34,15 +34,15 @@ const Button = ({
       variants={variants}
       whileHover="hover"
       whileTap="click"
-      disabled={disabled}
-      className={`button ${classes} ${className} disabled:opacity-40 disabled:cursor-not-allowed`}
+      disabled={disabled || isLoading}
+      className={`button ${classes} ${className} ${
+        disabled ? "opacity-40 cursor-not-allowed" : ""
+      } `}
       onClick={onClick}
     >
       {isLoading ? <Spinner /> : children}
     </motion.button>
   );
 };
-
-Button.propTypes = {};
 
 export default Button;

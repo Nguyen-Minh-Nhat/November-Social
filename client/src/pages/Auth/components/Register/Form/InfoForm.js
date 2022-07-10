@@ -16,7 +16,7 @@ const schema = yup.object().shape({
   gender: yup.string().required("Gender is a required field"),
   birthDate: yup
     .date()
-    .max(new Date(), "Are you a time traveler? Please Enter Valid BirthDay")
+    .max(new Date(), "Are you a time traveler? Please enter valid birth date")
     .required(),
 });
 
@@ -45,7 +45,6 @@ const InfoForm = ({ onBackStep, onNextStep, initialData }) => {
 
   useEffect(() => {
     setValue("birthDate", date, { shouldValidate: true });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
@@ -70,10 +69,20 @@ const InfoForm = ({ onBackStep, onNextStep, initialData }) => {
           error={errors.lastName}
         />
       </div>
-      <DropdownDatePicker
-        setDate={setDate}
-        initialDate={initialData.birthDate}
-      />
+      <div>
+        <DropdownDatePicker
+          setDate={setDate}
+          initialDate={initialData.birthDate}
+        />
+
+        {errors.birthDate ? (
+          <span className="text-left block text-base text-red-500">
+            {t(errors.birthDate.message)}
+          </span>
+        ) : (
+          ""
+        )}
+      </div>
       <CheckBoxGender register={register} />
 
       <div className="relative w-full flex justify-center text-[14px]">

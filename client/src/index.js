@@ -20,7 +20,9 @@ root.render(
         <PersistGate loading={null} persistor={persistStore(store)}>
           <Suspense fallback={<div>Loading...</div>}>
             <ToastContainer />
-            <GoogleOAuthProvider clientId="1096441693667-ngdvimskmd1trh82ptlngqedcbr82s38.apps.googleusercontent.com">
+            <GoogleOAuthProvider
+              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+            >
               <App />
             </GoogleOAuthProvider>
           </Suspense>

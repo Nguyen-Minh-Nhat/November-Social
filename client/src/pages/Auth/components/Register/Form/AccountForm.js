@@ -13,7 +13,10 @@ const schema = yup.object().shape({
     .string()
     .email("Email must be a valid email")
     .required("Email is a required field"),
-  password: yup.string().required("Password is a required field"),
+  password: yup
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is a required field"),
   confirmPassword: yup
     .string()
     .oneOf(

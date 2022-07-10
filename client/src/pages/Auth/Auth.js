@@ -24,13 +24,13 @@ const AuthPage = () => {
       <motion.div
         layout
         transition={transition}
-        className="relative z-90 h-full 
+        className="relative h-full 
         w-1/2 flex items-center justify-center  
-      dark:bg-dark-very-light"
+      dark:bg-dark-very-light p-8"
       >
         <div
           className="absolute right-8 top-8 z-50 
-          flex font-bold text-lg "
+          flex font-bold text-lg"
         >
           <ToggleButton />
           <ChangeLanguage />
@@ -57,7 +57,7 @@ const AuthPage = () => {
               animate="visible"
               exit="exit"
             >
-              <Register setIsLogin={setIsLogin} />
+              <Register />
             </motion.div>
           )}
         </AnimatePresence>

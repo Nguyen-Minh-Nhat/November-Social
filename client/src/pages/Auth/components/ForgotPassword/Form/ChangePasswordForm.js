@@ -11,6 +11,7 @@ const schema = yup.object().shape({
   password: yup.string().required("Password is a required field"),
   confirmPassword: yup
     .string()
+    .min(6, "Password must be at least 6 characters")
     .oneOf(
       [yup.ref("password"), null],
       "Password and confirm password does not match",
@@ -67,6 +68,7 @@ const ChangePasswordForm = (props) => {
         type="submit"
         primary
         disabled={!isValid}
+        isLoading={props.isLoading}
         className="w-full"
         large
       >

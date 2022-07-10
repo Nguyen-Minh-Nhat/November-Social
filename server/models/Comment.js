@@ -4,13 +4,16 @@ const Schema = mongoose.Schema;
 
 const CommentSchema = new Schema(
   {
-    commentText: String,
-    commentImage: String,
+    text: String,
+    image: String,
     user: {
       type: Schema.Types.ObjectId,
       ref: "user",
     },
-    post: {
+    postUserId: mongoose.Types.ObjectId,
+    tag: Object,
+    reply: mongoose.Types.ObjectId,
+    postId: {
       type: Schema.Types.ObjectId,
       ref: "post",
     },
@@ -20,14 +23,8 @@ const CommentSchema = new Schema(
         ref: "user",
       },
     ],
-    childComments: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "childComment",
-      },
-    ],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("comment", CommentSchema);

@@ -6,7 +6,7 @@ const Register = () => {
   const { t } = useTranslation();
   return (
     <div
-      className="min-h-[460px] w-[460px]  
+      className="min-h-[460px] w-[460px] min-w-100%  
       flex flex-col gap-4 "
     >
       <div

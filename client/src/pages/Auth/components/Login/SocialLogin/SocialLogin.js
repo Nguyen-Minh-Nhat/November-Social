@@ -1,8 +1,6 @@
-import React, { useEffect, useRef } from "react";
-import socials from "../../../../../config/socials";
-import jwt_decode from "jwt-decode";
-import Button from "../../../../../components/Button";
 import { GoogleLogin } from "@react-oauth/google";
+import jwt_decode from "jwt-decode";
+import React from "react";
 import FacebookLogin from "react-facebook-login";
 import authApi from "../../../../../api/authApi";
 
@@ -18,7 +16,6 @@ const SocialLogin = ({ onSuccessLogin }) => {
     }
   };
   const handleFacebookLogin = async (response) => {
-    console.log(response);
     try {
       const { name, picture, email } = response;
       const res = await authApi.facebookLogin({
@@ -34,13 +31,6 @@ const SocialLogin = ({ onSuccessLogin }) => {
 
   return (
     <div className="flex justify-center gap-6">
-      {/* {socials.map((method) => {
-        return (
-          <Button key={method.name} w-16 h-14>
-            <span className="text-[20px]">{method.icon}</span>
-          </Button>
-        );
-      })} */}
       <GoogleLogin
         type="icon"
         onSuccess={handleGoogleLogin}

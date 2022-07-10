@@ -13,11 +13,13 @@ import storage from "redux-persist/lib/storage";
 import langSlice from "./slices/langSlice";
 import userSlice from "./slices/userSlice";
 import authReducer from "./slices/authSlice";
+import postReducer from "./slices/postSlice";
 
 const rootReducer = combineReducers({
   lang: langSlice,
   user: userSlice,
   auth: authReducer,
+  post: postReducer,
 });
 
 const persistConfig = {
@@ -28,14 +30,6 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-// const store = configureStore({
-//   reducer: rootReducer,
-//   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware({
-//       serializableCheck: false,
-//     }),
-// });
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>

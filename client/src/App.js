@@ -1,58 +1,43 @@
-import { useDispatch, useSelector } from "react-redux";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Route, Routes } from "react-router-dom";
+import routes from "../src/config/routes";
 import FirstConfig from "./components/FirstConfig/FirstConfig";
-import { logout } from "./redux/slices/authSlice";
-import { privateRoutes, publicRoutes } from "./routes";
+import DefaultLayout from "./layouts/DefaultLayout";
+import HeaderOnly from "./layouts/HeaderOnly";
+import AuthPage from "./pages/Auth";
+import ActiveAccount from "./pages/Auth/ActiveAccount";
+import { privateRoutes } from "./routes";
 import PrivateRoutes from "./routes/PrivateRoutes";
 import PublicRoutes from "./routes/PublicRoutes";
-import AuthPage from "./pages/Auth";
-import authApi from "./api/authApi";
-import Login from "./pages/Auth/components/Login";
-import Register from "./pages/Auth/components/Register";
-import { AnimatePresence } from "framer-motion";
-
-const isLogged = false;
 function App() {
   const user = useSelector((state) => state.auth.user);
-  // const dispatch = useDispatch();
-  // const isLogged = !!user;
-  // const handleLogout = async () => {
-  //   try {
-  //     await authApi.logout();
-  //     const action = logout();
-  //     dispatch(action);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-  const location = useLocation();
-  return (
-    <div className="App w-screen h-screen flex dark:bg-dark-very-light overflow-hidden">
-      {/* <div onClick={handleLogout}>Logout</div> */}
-      <FirstConfig />
+  const isLogged = !!user;
 
+  return (
+    <div className="App w-screen h-screen dark:bg-dark-very-light overflow-hidden">
+      <FirstConfig />
       <Routes>
         <Route element={<PublicRoutes isLogged={isLogged} />}>
-          <Route path={"/login"} element={<AuthPage />} />
-          <Route path={"/register"} element={<AuthPage />} />
-
-          {/* {publicRoutes.map((route, index) => (
-            <Route
-            key={index}
-            path={route.path}
-            element={<route.component />}
-            />
-          ))} */}
+          <Route path={routes.login} element={<AuthPage />} />
+          <Route path={routes.register} element={<AuthPage />} />
+          <Route path={routes.userActive} element={<ActiveAccount />} />
         </Route>
 
         <Route element={<PrivateRoutes isLogged={isLogged} />}>
-          {privateRoutes.map((route, index) => (
-            <Route
-              key={index}
-              path={route.path}
-              element={<route.component />}
-            />
-          ))}
+          {privateRoutes.map((route, index) => {
+            const Layout = DefaultLayout;
+            return (
+              <Route
+                key={index}
+                path={route.path}
+                element={
+                  <Layout>
+                    <route.component />
+                  </Layout>
+                }
+              />
+            );
+          })}
         </Route>
       </Routes>
     </div>

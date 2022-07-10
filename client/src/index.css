@@ -53,8 +53,85 @@
     background-color: var(--color-primary);
   }
 
+  html *::-webkit-scrollbar {
+    transition: all 1s linear;
+    border-radius: 0;
+    width: 8px;
+  }
+
+  html *::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(107, 164, 233, 0.7);
+  }
+
+  html *::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  .scrollAble {
+    overflow-y: overlay;
+  }
+
+  .scrollAble::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    opacity: 0;
+  }
+
+  .scrollAble:hover::-webkit-scrollbar-thumb {
+    transition: all 1s linear;
+    opacity: 1;
+    background-color: rgba(107, 164, 233, 0.7);
+  }
+
+  .isLiked {
+    @apply bg-red-600 shadow-primary/50;
+  }
+
+  .bouncy {
+    -webkit-animation: bouncy 0.6s;
+    animation: bouncyAnimate 0.6s;
+    -webkit-animation-duration: 0.6s;
+    animation-duration: 0.6s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+  }
+
+  @keyframes bouncyAnimate {
+    0%,
+    100% {
+      transform: scale(1, 1);
+    }
+
+    25% {
+      transform: scale(0.9, 1.1);
+    }
+    50% {
+      transform: scale(1.1, 0.9);
+    }
+    75% {
+      transform: scale(0.95, 1.05);
+    }
+  }
+
   .button {
-    @apply cursor-pointer rounded-lg px-4 py-4 tracking-wide bg-slate-200  flex justify-center shadow-md;
+    @apply cursor-pointer rounded-lg px-4 py-4 tracking-wide bg-slate-200  flex justify-center;
+  }
+
+  .button.shadow {
+    @apply shadow-md;
+  }
+
+  .button.circle {
+    @apply p-0 relative w-10 h-10 bg-dark-very-light shadow-primary/50 rounded-full flex justify-center items-center;
+  }
+
+  .button.circle.small {
+    @apply w-5 h-5 text-[8px];
+  }
+
+  .button.circle.medium {
+    @apply w-8 h-8 text-[12px];
   }
 
   .button.primary {
@@ -67,6 +144,34 @@
   .button.large {
     @apply max-h-[55.33px] text-[18px];
   }
+
+  .hover-brightness {
+    @apply hover:dark:bg-primary/20 hover:dark:text-dark-text-bold transition-all;
+  }
+
+  .tooltip.bottom {
+    @apply top-full origin-top;
+  }
+
+  .tooltip.top {
+    @apply bottom-full origin-bottom;
+  }
+
+  .tooltip .arrow {
+    @apply absolute  left-1/2 -translate-x-1/2 border-t-4 border-l-4 border-r-4 border-b-4 border-transparent;
+  }
+
+  .arrow.top {
+    @apply top-full border-t-slate-400/50;
+  }
+
+  .arrow.bottom {
+    @apply bottom-full border-b-slate-400/50;
+  }
+}
+
+.max-height {
+  max-height: min((100vh - 96px) - 60px, 734px);
 }
 
 @layer utilities {

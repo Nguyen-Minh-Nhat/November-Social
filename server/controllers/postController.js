@@ -7,77 +7,65 @@ var success = false;
 
 const postController = {
   create: async (req, res) => {
-    const { userID, postText } = req.body;
-    const file = req.files?.postImage;
     try {
+      const { postText } = req.body;
+      const file = req.files?.postImage;
       if (file || postText) {
         var postImage = "";
         //Create new post
-        var newPost = new Post({ postText, postImage, user: userID });
-        await newPost.save();
+        var newPost = new Post({ postText, postImage, user: req.user.id });
         if (file) {
           postImage = await upload(
             file.tempFilePath,
             `novsocial/posts/${newPost._id}`,
           );
-
-          //Update a post
-          newPost = await Post.findOneAndUpdate(
-            { _id: newPost._id },
-            { postImage },
-            { new: true },
-          );
+          newPost.postImage = postImage;
         }
+        await newPost.save();
         newPost = await Post.findOne({ _id: newPost._id }).populate({
           path: "user",
           select: "avatar name followers",
         });
-        success = true;
+        res.json({
+          success,
+          message: "Post a status successfully",
+          newPost,
+        });
       }
     } catch (error) {
-      console.log(error);
-    }
-
-    if (req.files) await deleteTmp(req.files);
-    if (success) {
-      res.json({
-        success,
-        message: "Post a status successfully",
-        newPost,
-      });
-    } else {
-      res.json({
-        success,
-        message: "Cannot create a post",
-      });
+      return res.status(500).json({ msg: error.message });
+    } finally {
+      if (req.files) await deleteTmp(req.files);
     }
   },
-
   getAllPost: async (req, res) => {
-    const { userID } = req.body;
-    const { page = 1, limit = 5 } = req.query;
-    const user = await User.find({ _id: userID }).select("following");
-    const listOfPost = await Post.find({
-      user: [...user[0].following, userID],
-    })
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .sort("-createdAt")
-      .populate({
-        path: "user",
-        select: "avatar name followers",
+    try {
+      const userID = req.user.id;
+      const { page = 1, limit = 5 } = req.query;
+      const user = await User.find({ _id: userID }).select("following");
+      const listOfPost = await Post.find({
+        user: [...user, userID],
+      })
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .sort("-createdAt")
+        .populate({
+          path: "user",
+          select: "avatar name followers",
+        });
+
+      res.json({
+        message: "This is list of post",
+        listOfPost,
       });
-    res.json({
-      success: true,
-      message: "This is list of post",
-      listOfPost,
-    });
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
   },
 
   getAPost: async (req, res) => {
     const postID = req.params.id;
-
-    const { userID } = req.body;
+    const userID = req.user.id;
     const post = await Post.findOne({
       user: userID,
       post: postID,
@@ -111,21 +99,24 @@ const postController = {
   },
 
   update: async (req, res) => {
-    const postID = req.params.id;
-    const { userID, postText, isImageChange } = req.body;
-
-    const updatePost = await Post.findOne({ _id: postID, user: userID });
-
     try {
+      const postID = req.params.id;
+      const userID = req.user.id;
+      const { postText } = req.body;
+      const updatePost = await Post.findOne({ _id: postID, user: userID });
+      const isImageChange = req.body.postImage !== updatePost.postImage;
       if (updatePost) {
         var postImage = updatePost.postImage;
         const file = req.files?.postImage;
-        if (isImageChange === "true" && postImage !== "") {
+        if (isImageChange && postImage !== "") {
           await destroy(postImage);
           postImage = "";
         }
-        if (isImageChange === "true" && file?.name !== undefined) {
-          postImage = await upload(file.tempFilePath, "novsocial/posts");
+        if (isImageChange && file?.name !== undefined) {
+          postImage = await upload(
+            file.tempFilePath,
+            `novsocial/posts/${updatePost._id}`,
+          );
         }
 
         //Update a post
@@ -139,37 +130,29 @@ const postController = {
           path: "user",
           select: "avatar name followers",
         });
-
-        success = true;
+        res.json({
+          message: "Update a status successfully",
+          updatedPost,
+        });
       }
     } catch (error) {
-      console.log(error);
-    }
-
-    if (req.files) await deleteTmp(req.files);
-    if (success) {
-      res.json({
-        success,
-        message: "Update a status successfully",
-        updatedPost,
-      });
-    } else {
-      res.json({
-        success,
-        message: "Update fail",
-      });
+      return res.status(500).json({ msg: error.message });
+    } finally {
+      if (req.files) await deleteTmp(req.files);
     }
   },
 
   love: async (req, res) => {
-    const { userID, postID } = req.body;
+    const postID = req.params.id;
+    const userID = req.user.id;
     var state = 0;
-
     try {
-      var lovedPost = await Post.findOne({ _id: postID });
+      var post = await Post.findOne({ _id: postID });
+      if (!post)
+        return res.status(400).json({ msg: "This post does not exist." });
 
-      if (!lovedPost.likes?.includes(userID)) {
-        lovedPost = await Post.findByIdAndUpdate(
+      if (!post.likes?.includes(userID)) {
+        post = await Post.findByIdAndUpdate(
           { _id: postID },
           {
             $push: { likes: userID },
@@ -181,7 +164,7 @@ const postController = {
         });
         state = 1;
       } else {
-        lovedPost = await Post.findByIdAndUpdate(
+        post = await Post.findByIdAndUpdate(
           { _id: postID },
           {
             $pull: { likes: userID },
@@ -193,30 +176,20 @@ const postController = {
         });
         state = -1;
       }
-      success = true;
-    } catch (error) {
-      console.log(error);
-    }
-    if (req.files) await deleteTmp(req.files);
-    if (success) {
       res.json({
-        success,
         message: "Love a post successfully",
         state,
-        lovedPost,
+        post,
       });
-    } else {
-      res.json({
-        success,
-        message: "Love fail may be the post was deleted!",
-      });
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
     }
   },
 
   delete: async (req, res) => {
-    const _id = req.params.id;
-    const { userID } = req.body;
     try {
+      const _id = req.params.id;
+      const userID = req.user.id;
       const deletePost = await Post.findOneAndDelete({
         _id,
         user: userID,
@@ -229,15 +202,10 @@ const postController = {
       await ChildComment.deleteMany({ post: deletePost._id });
 
       res.json({
-        success: true,
-        message: "Delete a status successfully",
+        msg: "Deleted Post!",
       });
     } catch (error) {
-      console.log(error);
-      res.json({
-        success: false,
-        message: "Delete fail",
-      });
+      return res.status(500).json({ msg: err.message });
     }
   },
 };

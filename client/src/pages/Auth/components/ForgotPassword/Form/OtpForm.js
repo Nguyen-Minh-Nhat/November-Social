@@ -4,17 +4,11 @@ import Button from "../../../../../components/Button";
 import OtpField from "../../../../../components/OtpField";
 const maxDigits = 6;
 
-const OtpForm = (props) => {
+const OtpForm = ({ isLoading, onSubmit }) => {
   const { t } = useTranslation();
   const [isValid, setIsValid] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [value, setValue] = useState([]);
 
-  const handleSubmit = () => {
-    console.log(value);
-    setIsLoading(true);
-    props.onSubmit();
-  };
+  const [value, setValue] = useState([]);
 
   useEffect(() => {
     if (value.filter(String).length === maxDigits) {
@@ -42,7 +36,7 @@ const OtpForm = (props) => {
         title={t("Code")}
         disabled={isLoading}
         setValue={setValue}
-        onSubmit={handleSubmit}
+        onSubmit={() => onSubmit(value.join(""))}
         max={maxDigits}
       />
       <Button
@@ -51,7 +45,7 @@ const OtpForm = (props) => {
         disabled={!isValid}
         className="w-full"
         isLoading={isLoading}
-        onClick={handleSubmit}
+        onClick={() => onSubmit(value.join(""))}
         large
       >
         <span className="font-bold capitalize">{t("verify")}</span>

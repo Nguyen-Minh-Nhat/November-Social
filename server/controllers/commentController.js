@@ -2,79 +2,76 @@ const { upload, destroy, destroyDirectory, deleteTmp } = require("../utils");
 const Comment = require("../models/Comment");
 const ChildComment = require("../models/ChildComment");
 const Post = require("../models/Post");
-var success = false;
 
 const commentController = {
   create: async (req, res) => {
-    const { commentText, userID, postID } = req.body;
-    const file = req.files?.commentImage;
-
     try {
-      if (file || commentText) {
-        var commentImage = "";
-        //Create new comment
-        var newComment = new Comment({
-          commentText,
-          commentImage,
-          user: userID,
-          post: postID,
-        });
-        await newComment.save();
-
-        //Update a post
-        await Post.findOneAndUpdate(
-          { _id: postID },
-          {
-            $push: { comments: newComment._id },
-          },
-          { new: true }
-        );
-
-        if (file) {
-          commentImage = await upload(
-            file.tempFilePath,
-            `veta/posts/${postID}/${newComment._id}`
-          );
-
-          //Update a comment
-          newComment = await Comment.findOneAndUpdate(
-            { _id: newComment._id },
-            { commentImage },
-            { new: true }
-          );
-        }
-        newComment = await Comment.findOne({
-          _id: newComment._id,
-        }).populate({
-          path: "user",
-          select: "avatar name",
-        });
-
-        success = true;
+      const userId = req.user.id;
+      const { text, tag, reply, postId, postUserId } = req.body;
+      const file = req.files?.image;
+      const post = await Post.findById(postId);
+      if (!file && !text)
+        return res.status(400).json({ msg: "Please fill in all fields." });
+      if (!post)
+        return res.status(400).json({ msg: "This post does not exist." });
+      if (reply) {
+        const cm = await Comment.findById(reply);
+        if (!cm)
+          return res.status(400).json({ msg: "This comment does not exist." });
       }
-    } catch (error) {
-      console.log(error);
-    }
+      var image = "";
 
-    if (req.files) await deleteTmp(req.files);
-    if (success) {
-      return res.json({
-        success,
-        message: "Comment successfully",
+      var newComment = new Comment({
+        text,
+        image,
+        reply,
+        tag,
+        user: userId,
+        postUserId,
+        postId,
+      });
+
+      if (file) {
+        image = await upload(
+          file.tempFilePath,
+          `novsocial/posts/${postId}/${newComment._id}`,
+        );
+        newComment.image = image;
+      }
+
+      await newComment.save();
+
+      //Update a post
+      await Post.findOneAndUpdate(
+        { _id: postId },
+        {
+          $push: { comments: newComment._id },
+        },
+        { new: true },
+      );
+
+      newComment = await Comment.findOne({
+        _id: newComment._id,
+      }).populate({
+        path: "user",
+        select: "avatar name",
+      });
+
+      res.json({
         newComment,
       });
-    } else {
-      return res.json({
-        success,
-        message: "Cannot comment at this post",
-      });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    } finally {
+      if (req.files) await deleteTmp(req.files);
     }
   },
 
-  getAllComment: async (req, res) => {
-    const postID = req.params.id;
+  getComments: async (req, res) => {
+    const postId = req.params.id;
     const listOfComment = await Comment.find({
-      post: postID,
+      postId,
+      reply: { $exists: false },
     }).populate({
       path: "user",
       select: "avatar name",
@@ -87,14 +84,16 @@ const commentController = {
   },
 
   update: async (req, res) => {
-    const commentID = req.params.id;
-    const { userID, commentText, isImageChange, postID } = req.body;
+    const commentId = req.params.id;
+    const userId = req.user.id;
+    const { text, postId } = req.body;
 
     const updateComment = await Comment.findOne({
-      _id: commentID,
-      user: userID,
-      post: postID,
+      _id: commentId,
+      user: userId,
+      postId,
     });
+    const isImageChange = req.body.image !== updateComment.image;
 
     if (!updateComment) {
       res.json({
@@ -104,84 +103,61 @@ const commentController = {
     }
 
     try {
-      var imgName = updateComment.commentImage;
-      const file = req.files?.commentImage;
-      if (isImageChange === "true" && imgName !== "") {
-        await destroy(imgName);
+      let image = updateComment.image;
+      const file = req.files?.image;
+      if (isImageChange && image) {
+        await destroy(image);
       }
-      if (isImageChange === "true" && file?.name !== undefined) {
-        imgName = upload(file.tempFilePath, "veta/comments");
+      if (isImageChange && file?.name !== undefined) {
+        image = await upload(
+          file.tempFilePath,
+          `novsocial/posts/${postId}/${updateComment._id}`,
+        );
       }
-
-      //Update a comment
-      const newComment = {
-        commentText,
-        commentImage: imgName,
-        user: userID,
-        post: postID,
-      };
 
       const updatedComment = await Comment.findOneAndUpdate(
-        { _id: commentID, user: userID, post: postID },
-        newComment,
-        { new: true }
+        { _id: commentId, user: userId, postId },
+        { text, image },
+        { new: true },
       ).populate({
         path: "user",
         select: "avatar name",
       });
 
       return res.json({
-        success: true,
-        message: "Update a comment successfully",
         updatedComment,
       });
     } catch (error) {
-      return res.json({
-        success: false,
-        message: "Update fail",
-        error,
-      });
+      return res.status(500).json({ msg: error.message });
+    } finally {
+      if (req.files) await deleteTmp(req.files);
     }
   },
 
   delete: async (req, res) => {
-    const commentID = req.params.id;
-
-    const { userID } = req.body;
+    const commentId = req.params.id;
+    const userId = req.user.id;
     try {
       const deleteComment = await Comment.findOneAndDelete({
-        _id: commentID,
-        user: userID,
+        _id: commentId,
+        $or: [{ user: userId }, { postUserId: userId }],
       });
 
       await Post.findOneAndUpdate(
-        { _id: deleteComment.post },
+        { _id: deleteComment.postId },
         {
           $pull: { comments: deleteComment._id },
-        }
+        },
       );
+      if (deleteComment.image) {
+        await destroyDirectory(
+          `novsocial/posts/${deleteComment.postId}/${deleteComment._id}`,
+        );
+      }
 
-      await ChildComment.deleteMany({ comment: deleteComment._id });
-
-      await destroyDirectory(
-        `veta/posts/${deleteComment.post}/${deleteComment._id}`
-      );
-
-      success = true;
+      res.json({ msg: "Deleted Comment!" });
     } catch (error) {
-      console.log(error);
-    }
-
-    if (success) {
-      res.json({
-        success: true,
-        message: "Delete a comment successfully",
-      });
-    } else {
-      res.json({
-        success: false,
-        message: "Delete fail",
-      });
+      return res.status(500).json({ msg: error.message });
     }
   },
 };

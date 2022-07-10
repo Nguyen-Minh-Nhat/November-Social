@@ -31,6 +31,23 @@ const authApi = {
     const res = await axiosClient.get(URL + "logout");
     return res;
   },
+
+  sendOtp: async (data) => {
+    const res = await axiosClient.post(URL + "forgot_password", data);
+    return res;
+  },
+  confirmOtp: async (data) => {
+    const res = await axiosClient.post(URL + "confirm_otp", data);
+    return res;
+  },
+  resetPassword: async (data) => {
+    const res = await axiosClient.post(URL + "reset_password", data);
+    return res;
+  },
+  refreshToken: async () => {
+    const res = await axiosClient.post(URL + "refresh_token");
+    return res;
+  },
 };
 
 export default authApi;

@@ -10,6 +10,11 @@ const publicRoutes = [
   },
   { path: routes.userActive, component: ActiveAccountPage },
 ];
-const privateRoutes = [{ path: routes.home, component: HomePage }];
+const privateRoutes = [
+  { path: routes.home, component: HomePage },
+  { path: routes.friends, component: HomePage },
+  { path: routes.photos, component: HomePage },
+  { path: routes.Cinema, component: HomePage },
+];
 
 export { publicRoutes, privateRoutes };
