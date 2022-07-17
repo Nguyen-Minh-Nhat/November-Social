@@ -35,6 +35,7 @@ const LeftAction = () => {
         setVisible={setShowSettings}
         className="w-72 origin-[93%_0%]"
         render={<AccountDropdown />}
+        placement="right"
       >
         <div
           onClick={() => setShowSettings(!showSettings)}

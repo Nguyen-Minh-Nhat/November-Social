@@ -10,7 +10,7 @@ router.get("/following/:id", verifyToken, userController.getAllFollowingUsers);
 router.patch("/update", verifyToken, userController.updateUser);
 
 //Follow
-router.put("/follow", verifyToken, userController.follow);
+router.patch("/follow/:id", verifyToken, userController.follow);
 router.get("/suggestionsUser", verifyToken, userController.suggestionsUser);
 
 module.exports = router;

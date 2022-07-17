@@ -17,6 +17,12 @@ const axiosClient = axios.create({
   withCredentials: true,
 });
 
+export const setHeader = () => {
+  return {
+    headers: { Authorization: store.getState().auth.accessToken },
+  };
+};
+
 export const axiosClientPrivate = axios.create({
   baseURL,
   headers: {

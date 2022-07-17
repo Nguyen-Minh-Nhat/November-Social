@@ -1,9 +1,13 @@
 const { upload, destroy, destroyDirectory, deleteTmp } = require("../utils");
 const Comment = require("../models/Comment");
-const ChildComment = require("../models/ChildComment");
 const Post = require("../models/Post");
 
 const commentController = {
+  generatorUploadFolder: (comment) => {
+    return `novsocial/posts/${comment.postId}/${
+      comment?.reply ? comment.reply + "/" : ""
+    }${comment._id}`;
+  },
   create: async (req, res) => {
     try {
       const userId = req.user.id;
@@ -20,12 +24,11 @@ const commentController = {
           return res.status(400).json({ msg: "This comment does not exist." });
       }
       var image = "";
-
       var newComment = new Comment({
         text,
         image,
         reply,
-        tag,
+        tag: tag ? JSON.parse(tag) : null,
         user: userId,
         postUserId,
         postId,
@@ -34,7 +37,7 @@ const commentController = {
       if (file) {
         image = await upload(
           file.tempFilePath,
-          `novsocial/posts/${postId}/${newComment._id}`,
+          commentController.generatorUploadFolder(newComment),
         );
         newComment.image = image;
       }
@@ -49,6 +52,15 @@ const commentController = {
         },
         { new: true },
       );
+      if (reply) {
+        await Comment.findOneAndUpdate(
+          { _id: reply },
+          {
+            $push: { childComments: newComment._id },
+          },
+          { new: true },
+        );
+      }
 
       newComment = await Comment.findOne({
         _id: newComment._id,
@@ -82,11 +94,25 @@ const commentController = {
       listOfComment,
     });
   },
+  getReplyComments: async (req, res) => {
+    const commentId = req.params.id;
+    const listOfComment = await Comment.find({
+      reply: commentId,
+    }).populate({
+      path: "user",
+      select: "avatar name",
+    });
+    res.json({
+      success: true,
+      message: "This is list of comment",
+      listOfComment,
+    });
+  },
 
   update: async (req, res) => {
     const commentId = req.params.id;
     const userId = req.user.id;
-    const { text, postId } = req.body;
+    const { text, postId, tag } = req.body;
 
     const updateComment = await Comment.findOne({
       _id: commentId,
@@ -94,7 +120,6 @@ const commentController = {
       postId,
     });
     const isImageChange = req.body.image !== updateComment.image;
-
     if (!updateComment) {
       res.json({
         success: false,
@@ -102,22 +127,32 @@ const commentController = {
       });
     }
 
+    let clientTag = null;
+
+    if (tag) {
+      clientTag = JSON.parse(tag);
+    }
     try {
       let image = updateComment.image;
       const file = req.files?.image;
       if (isImageChange && image) {
         await destroy(image);
+        image = "";
       }
       if (isImageChange && file?.name !== undefined) {
         image = await upload(
           file.tempFilePath,
-          `novsocial/posts/${postId}/${updateComment._id}`,
+          commentController.generatorUploadFolder(updateComment),
         );
       }
 
       const updatedComment = await Comment.findOneAndUpdate(
         { _id: commentId, user: userId, postId },
-        { text, image },
+        {
+          text,
+          image,
+          tag: updateComment.tag !== clientTag ? clientTag : updateComment.tag,
+        },
         { new: true },
       ).populate({
         path: "user",
@@ -146,16 +181,63 @@ const commentController = {
       await Post.findOneAndUpdate(
         { _id: deleteComment.postId },
         {
-          $pull: { comments: deleteComment._id },
+          $pullAll: { comments: [...deleteComment?.childComments, commentId] },
         },
       );
-      if (deleteComment.image) {
-        await destroyDirectory(
-          `novsocial/posts/${deleteComment.postId}/${deleteComment._id}`,
-        );
-      }
+      await Comment.findOneAndUpdate(
+        { _id: deleteComment.reply },
+        { $pull: { childComments: deleteComment._id } },
+      );
+
+      await Comment.deleteMany({ reply: deleteComment._id });
+
+      await destroyDirectory(
+        commentController.generatorUploadFolder(deleteComment),
+      );
 
       res.json({ msg: "Deleted Comment!" });
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
+  },
+
+  like: async (req, res) => {
+    try {
+      const commentId = req.params.id;
+      const userId = req.user.id;
+      let comment = await Comment.findOne({
+        _id: commentId,
+      });
+      if (!comment)
+        return res.status(400).json({ msg: "This comment does not exist." });
+
+      if (!comment.likes?.includes(userId)) {
+        comment = await Comment.findByIdAndUpdate(
+          { _id: commentId },
+          {
+            $push: { likes: userId },
+          },
+          { new: true },
+        ).populate({
+          path: "user",
+          select: "avatar name",
+        });
+      } else {
+        comment = await Comment.findByIdAndUpdate(
+          { _id: commentId },
+          {
+            $pull: { likes: userId },
+          },
+          { new: true },
+        ).populate({
+          path: "user",
+          select: "avatar name",
+        });
+      }
+      res.json({
+        message: "Love a post successfully",
+        comment,
+      });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }

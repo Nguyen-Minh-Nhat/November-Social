@@ -3,7 +3,11 @@ const colors = require("tailwindcss/colors");
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        "spin-fast": "spin 0.75s linear infinite",
+      },
+    },
     colors: {
       transparent: "transparent",
       current: "currentColor",
@@ -17,6 +21,7 @@ module.exports = {
       pink: colors.fuchsia,
       slate: colors.slate,
       blue: colors.blue,
+      sky: colors.sky,
       "text-bold": "rgb(var(--text-color-bold) / <alpha-value>)",
       "text-color-primary": "rgb(var(--text-color) / <alpha-value>)",
       primary: "rgb(var(--color-primary) / <alpha-value>)",
@@ -30,7 +35,7 @@ module.exports = {
         border: "rgb(59, 73, 99)",
 
         //text dark
-        "text-bold": "rgb(255, 255, 255)",
+        "text-bold": "#fafafa",
         "text-regular": " rgb(162, 165, 185)",
         "text-light": "rgb(117, 122, 145)",
       },

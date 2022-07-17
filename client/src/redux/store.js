@@ -9,17 +9,14 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-
-import langSlice from "./slices/langSlice";
-import userSlice from "./slices/userSlice";
 import authReducer from "./slices/authSlice";
 import postReducer from "./slices/postSlice";
+import chatReducer from "./slices/chatSlice";
 
 const rootReducer = combineReducers({
-  lang: langSlice,
-  user: userSlice,
   auth: authReducer,
   post: postReducer,
+  chat: chatReducer,
 });
 
 const persistConfig = {

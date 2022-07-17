@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "../Box";
 import Button from "../Button";
+import LoadingOverlay from "../LoadingOverlay";
 import Modal from "../Modal";
 
 const ConfirmBox = ({
@@ -11,6 +12,12 @@ const ConfirmBox = ({
   content,
   buttonText,
 }) => {
+  const [loading, setLoading] = useState(false);
+  const handleConfirm = async () => {
+    setLoading(true);
+    await onConfirm();
+    setLoading(false);
+  };
   return (
     <Modal show={show} setShow={setShow}>
       <Box header={header}>
@@ -24,11 +31,12 @@ const ConfirmBox = ({
             >
               <span className="text-primary">Cancel</span>
             </Button>
-            <Button small primary onClick={onConfirm}>
+            <Button small primary onClick={handleConfirm}>
               {buttonText}
             </Button>
           </div>
         </div>
+        {loading && <LoadingOverlay />}
       </Box>
     </Modal>
   );

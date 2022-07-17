@@ -73,6 +73,10 @@
     overflow-y: overlay;
   }
 
+  .scrollAble.occupy {
+    overflow-y: scroll;
+  }
+
   .scrollAble::-webkit-scrollbar-thumb {
     background-color: transparent;
     opacity: 0;
@@ -134,6 +138,10 @@
     @apply w-8 h-8 text-[12px];
   }
 
+  .comment-line {
+    @apply dark:bg-dark-very-light;
+  }
+
   .button.primary {
     @apply bg-blue-500 hover:enabled:bg-blue-600  text-white;
   }
@@ -167,6 +175,10 @@
 
   .arrow.bottom {
     @apply bottom-full border-b-slate-400/50;
+  }
+
+  .active .chat-item {
+    @apply bg-red-100;
   }
 }
 

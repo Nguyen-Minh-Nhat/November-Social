@@ -22,12 +22,13 @@ const PostCard = ({ data }) => {
     () => getDiffTime(new Date(data.createdAt)),
     [data.createdAt],
   );
+
   const dispatch = useDispatch();
   const handleDeletePost = async () => {
     try {
-      setShowConfirmDelete(false);
       await postApi.delete(data._id);
       const action = removePost(data._id);
+      setShowConfirmDelete(false);
       dispatch(action);
       toast.success("Post successfully deleted");
     } catch (error) {
@@ -67,6 +68,7 @@ const PostCard = ({ data }) => {
         <Popover
           visible={showMenu}
           setVisible={setShowMenu}
+          placement="right"
           render={
             <PostMenu
               onEdit={() => {

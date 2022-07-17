@@ -2,7 +2,6 @@ const Post = require("../models/Post");
 const User = require("../models/User");
 const Comment = require("../models/Comment");
 const { upload, destroy, destroyDirectory, deleteTmp } = require("../utils");
-const ChildComment = require("../models/ChildComment");
 var success = false;
 
 const postController = {
@@ -26,8 +25,8 @@ const postController = {
           path: "user",
           select: "avatar name followers",
         });
+        // newPost.numOfComments = newPost.commments?.length || 0;
         res.json({
-          success,
           message: "Post a status successfully",
           newPost,
         });
@@ -40,11 +39,11 @@ const postController = {
   },
   getAllPost: async (req, res) => {
     try {
-      const userID = req.user.id;
+      const userId = req.user.id;
       const { page = 1, limit = 5 } = req.query;
-      const user = await User.find({ _id: userID }).select("following");
+      const user = await User.findOne({ _id: userId }).select("following");
       const listOfPost = await Post.find({
-        user: [...user, userID],
+        user: [...user?.following, userId],
       })
         .limit(limit * 1)
         .skip((page - 1) * limit)
@@ -65,9 +64,9 @@ const postController = {
 
   getAPost: async (req, res) => {
     const postID = req.params.id;
-    const userID = req.user.id;
+    const userId = req.user.id;
     const post = await Post.findOne({
-      user: userID,
+      user: userId,
       post: postID,
     }).populate({
       path: "user",
@@ -77,16 +76,15 @@ const postController = {
   },
 
   getAllPostOfAUser: async (req, res) => {
-    const userID = req.params.id;
+    const userId = req.params.id;
 
-    const post = await Post.find({ user: userID }).sort("-createdAt").populate({
+    const post = await Post.find({ user: userId }).sort("-createdAt").populate({
       path: "user",
       select: "avatar name followers",
     });
     success = true;
     if (success) {
       res.json({
-        success,
         message: "This is all post of a user",
         post,
       });
@@ -101,9 +99,9 @@ const postController = {
   update: async (req, res) => {
     try {
       const postID = req.params.id;
-      const userID = req.user.id;
+      const userId = req.user.id;
       const { postText } = req.body;
-      const updatePost = await Post.findOne({ _id: postID, user: userID });
+      const updatePost = await Post.findOne({ _id: postID, user: userId });
       const isImageChange = req.body.postImage !== updatePost.postImage;
       if (updatePost) {
         var postImage = updatePost.postImage;
@@ -120,10 +118,10 @@ const postController = {
         }
 
         //Update a post
-        const newPost = { postText, postImage, user: userID };
+        const newPost = { postText, postImage, user: userId };
 
         var updatedPost = await Post.findOneAndUpdate(
-          { _id: postID, user: userID },
+          { _id: postID, user: userId },
           newPost,
           { new: true },
         ).populate({
@@ -144,18 +142,18 @@ const postController = {
 
   love: async (req, res) => {
     const postID = req.params.id;
-    const userID = req.user.id;
+    const userId = req.user.id;
     var state = 0;
     try {
       var post = await Post.findOne({ _id: postID });
       if (!post)
         return res.status(400).json({ msg: "This post does not exist." });
 
-      if (!post.likes?.includes(userID)) {
+      if (!post.likes?.includes(userId)) {
         post = await Post.findByIdAndUpdate(
           { _id: postID },
           {
-            $push: { likes: userID },
+            $push: { likes: userId },
           },
           { new: true },
         ).populate({
@@ -167,7 +165,7 @@ const postController = {
         post = await Post.findByIdAndUpdate(
           { _id: postID },
           {
-            $pull: { likes: userID },
+            $pull: { likes: userId },
           },
           { new: true },
         ).populate({
@@ -189,23 +187,20 @@ const postController = {
   delete: async (req, res) => {
     try {
       const _id = req.params.id;
-      const userID = req.user.id;
+      const userId = req.user.id;
       const deletePost = await Post.findOneAndDelete({
         _id,
-        user: userID,
+        user: userId,
       });
 
-      if (deletePost.postImage) {
-        await destroyDirectory(`novsocial/posts/${deletePost._id}`);
-      }
-      await Comment.deleteMany({ post: deletePost._id });
-      await ChildComment.deleteMany({ post: deletePost._id });
+      await destroyDirectory(`novsocial/posts/${deletePost._id}`);
+      await Comment.deleteMany({ postId: deletePost._id });
 
       res.json({
         msg: "Deleted Post!",
       });
     } catch (error) {
-      return res.status(500).json({ msg: err.message });
+      return res.status(500).json({ msg: error.message });
     }
   },
 };

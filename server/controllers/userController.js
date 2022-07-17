@@ -134,60 +134,50 @@ const UserController = {
   },
 
   follow: async (req, res) => {
-    const { userID, friendID } = req.body;
+    const followId = req.params.id;
+    const userId = req.user.id;
 
-    if (userID !== friendID) {
+    if (userId !== followId) {
       try {
-        var myself = await User.findOne({ _id: userID }).select("following");
-        var friend = await User.findOne({ _id: friendID }).select("followers");
-        const notFollow =
-          !friend.followers.includes(userID) &&
-          !myself.following.includes(friendID);
-        var state = 0;
-
-        if (notFollow) {
-          //Follow
-          await User.findOneAndUpdate(
-            { _id: userID },
-            { $push: { following: friendID } },
-          );
-
-          friend = await User.findOneAndUpdate(
-            { _id: friendID },
-            { $push: { followers: userID } },
-            { new: true },
-          ).select("name avatar followers");
-
-          state = 1;
-        } else {
+        var user = await User.findOne({ _id: userId, following: followId });
+        var follow = await User.findOne({ _id: followId, followers: userId });
+        const followed = follow && user;
+        if (followed) {
           //Unfollow
-          await User.findOneAndUpdate(
-            { _id: userID },
-            { $pull: { following: friendID } },
-          );
-
-          friend = await User.findOneAndUpdate(
-            { _id: friendID },
-            { $pull: { followers: userID } },
+          user = await User.findOneAndUpdate(
+            { _id: userId },
+            { $pull: { following: followId } },
             { new: true },
-          ).select("name avatar followers");
-          state = -1;
-        }
-        success = true;
-      } catch (error) {
-        console.log(error);
-      }
-    }
+          ).select("name avatar following");
 
-    if (req.files) await deleteTmp(req.files);
-    if (success) {
-      res.json({ success, message: "Successful action", friend, state });
-    } else {
-      res.json({ success, message: "May be something wrong" });
+          await User.findOneAndUpdate(
+            { _id: followId },
+            { $pull: { followers: userId } },
+            { new: true },
+          );
+        } else {
+          //Follow
+          user = await User.findOneAndUpdate(
+            { _id: userId },
+            { $push: { following: followId } },
+            { new: true },
+          ).select("name avatar following");
+
+          await User.findOneAndUpdate(
+            { _id: followId },
+            { $push: { followers: userId } },
+            { new: true },
+          );
+        }
+
+        res.json({ user });
+      } catch (error) {
+        return res.status(500).json({ error: err.message });
+      }
     }
   },
   suggestionsUser: async (req, res) => {
-    var user = await User.findOne({ _id: req.body.userID });
+    var user = await User.findOne({ _id: req.user.id });
     try {
       const newArr = [...user.following, user._id];
 
@@ -217,8 +207,8 @@ const UserController = {
       return res.json({
         users,
       });
-    } catch (err) {
-      return res.status(500).json({ msg: err.message });
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
     }
   },
 };

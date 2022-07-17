@@ -27,9 +27,11 @@ const getDiffTime = (startDate, endDate = new Date()) => {
   return "just now";
 };
 
-const checkIncludesCurrentUser = (userIds) => {
-  const user = store.getState().auth.user;
-  return userIds.includes(user._id);
+const checkIncludesUser = (
+  userIds,
+  userId = store.getState().auth.user._id,
+) => {
+  return userIds.includes(userId);
 };
 
-export { createImgUrl, getDiffTime, checkIncludesCurrentUser };
+export { createImgUrl, getDiffTime, checkIncludesUser };

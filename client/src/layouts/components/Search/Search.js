@@ -2,16 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import userApi from "../../../api/userApi";
 import AccountQuickView from "../../../components/AccountQuickView/AccountQuickView";
+import FollowButton from "../../../components/Button/FollowButton";
 import Popover from "../../../components/Popover";
 import Spinner from "../../../components/Spinner";
-import SpinnerV2 from "../../../components/Spinner/SpinnerV2";
 import useDebounce from "../../../hooks/useDebounce";
 const Search = () => {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [showSearchResult, setShowSearchResult] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const debouncedValue = useDebounce(searchValue, 500);
   const inputRef = useRef();
@@ -22,14 +22,14 @@ const Search = () => {
       return;
     }
     const handleSearch = async () => {
-      setIsLoading(true);
+      setLoading(true);
       try {
         const res = await userApi.searchUsers(debouncedValue, accessToken);
         setSearchResult(res.data.searchUser);
       } catch (error) {
         console.log(error);
       }
-      setIsLoading(false);
+      setLoading(false);
     };
     handleSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,8 +46,17 @@ const Search = () => {
       visible={showSearchResult && searchResult.length > 0}
       setVisible={setShowSearchResult}
       className="w-80 origin-top"
-      render={searchResult.map((user, index) => (
-        <AccountQuickView key={index} user={user} />
+      render={searchResult.map((user) => (
+        <div
+          key={user._id}
+          className="relative group dark:hover:bg-dark-light rounded-xl"
+        >
+          {" "}
+          <AccountQuickView user={user} />
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 invisible group-hover:visible opacity-50 hover:opacity-100">
+            <FollowButton followId={user._id} />
+          </div>
+        </div>
       ))}
     >
       <div
@@ -67,10 +76,9 @@ const Search = () => {
         />
         {searchValue && (
           <div className="mx-3 flex">
-            {isLoading ? (
+            {loading ? (
               <Spinner className="w-4 h-4 mr-0 -ml-0" />
             ) : (
-              // <SpinnerV2 />
               <i
                 className="fa-solid fa-circle-xmark text-slate-400 cursor-pointer"
                 onClick={handleClearSearch}

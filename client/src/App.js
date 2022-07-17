@@ -25,7 +25,25 @@ function App() {
 
         <Route element={<PrivateRoutes isLogged={isLogged} />}>
           {privateRoutes.map((route, index) => {
-            const Layout = DefaultLayout;
+            let Layout = route.layout ? route.layout : DefaultLayout;
+            if (route.children) {
+              return (
+                <Route
+                  key={index}
+                  path={route.path}
+                  element={
+                    <Layout>
+                      <route.component />
+                    </Layout>
+                  }
+                >
+                  <Route
+                    path={route.children.path}
+                    element={<route.children.component />}
+                  />
+                </Route>
+              );
+            }
             return (
               <Route
                 key={index}

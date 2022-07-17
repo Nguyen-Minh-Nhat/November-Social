@@ -34,12 +34,27 @@ const postSlice = createSlice({
       });
     },
 
-    addComment: (state, action) => {
+    addNewComment: (state, action) => {
       state.data = state.data.map((item) => {
         if (item._id === action.payload.postId) {
           return {
             ...item,
+            comments: [...item.comments, action.payload.comment._id],
             commentsDetail: [...item.commentsDetail, action.payload.comment],
+          };
+        }
+        return item;
+      });
+    },
+    addComments: (state, action) => {
+      state.data = state.data.map((item) => {
+        if (item._id === action.payload.postId) {
+          return {
+            ...item,
+            commentsDetail: [
+              ...item.commentsDetail,
+              ...action.payload.comments,
+            ],
           };
         }
         return item;
@@ -62,10 +77,21 @@ const postSlice = createSlice({
     removeComment: (state, action) => {
       state.data = state.data.map((item) => {
         if (item._id === action.payload.postId) {
-          const commentsDetail = item.commentsDetail.filter(
-            (comment) => comment._id !== action.payload._id,
+          const deletedComment = [];
+          const commentsDetail = item.commentsDetail.filter((comment) => {
+            if (
+              comment._id === action.payload._id ||
+              comment.reply === action.payload._id
+            ) {
+              deletedComment.push(comment._id);
+              return false;
+            }
+            return true;
+          });
+          const comments = item.comments.filter(
+            (comment) => !deletedComment.includes(comment),
           );
-          return { ...item, commentsDetail: commentsDetail };
+          return { ...item, comments, commentsDetail };
         }
         return item;
       });
@@ -79,7 +105,8 @@ export const {
   updatePost,
   removePost,
   setPostComments,
-  addComment,
+  addNewComment,
+  addComments,
   removeComment,
   updateComment,
 } = postSlice.actions;

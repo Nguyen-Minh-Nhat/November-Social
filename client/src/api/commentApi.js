@@ -1,32 +1,27 @@
-import store from "../redux/store";
-import { axiosClientPrivate } from "./axiosClient";
+import { axiosClientPrivate, setHeader } from "./axiosClient";
 
 const URL = "comment/";
 const commentApi = {
-  setHeader: () => {
-    return {
-      headers: { Authorization: store.getState().auth.accessToken },
-    };
-  },
   create: async (data) => {
     const res = await axiosClientPrivate.post(
       URL + "create",
       data,
-      commentApi.setHeader(),
+      setHeader(),
     );
     return res;
   },
   getComments: async (id) => {
-    const res = await axiosClientPrivate.get(
-      URL + `${id}`,
-      commentApi.setHeader(),
-    );
+    const res = await axiosClientPrivate.get(URL + `${id}`, setHeader());
+    return res;
+  },
+  getReplyComments: async (id) => {
+    const res = await axiosClientPrivate.get(URL + "reply/" + id, setHeader());
     return res;
   },
   delete: async (id) => {
     const res = await axiosClientPrivate.delete(
       URL + `delete/${id}`,
-      commentApi.setHeader(),
+      setHeader(),
     );
     return res;
   },
@@ -34,7 +29,7 @@ const commentApi = {
     const res = await axiosClientPrivate.put(
       URL + `update/${id}`,
       data,
-      commentApi.setHeader(),
+      setHeader(),
     );
     return res;
   },
@@ -42,7 +37,7 @@ const commentApi = {
     const res = await axiosClientPrivate.patch(
       URL + `like/${id}`,
       {},
-      commentApi.setHeader(),
+      setHeader(),
     );
     return res;
   },

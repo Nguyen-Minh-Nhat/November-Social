@@ -1,9 +1,11 @@
 import React, { useEffect, useId, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { createImgUrl } from "../../functions";
 import Avatar from "../Avatar";
-import CloseButton from "../CloseButton";
+import CloseButton from "../Button/CloseButton";
 import Img from "../Img";
+import SpinnerV2 from "../Spinner/SpinnerV2";
 import TextArea from "../TextArea";
 
 const CommentForm = ({ initial, onSubmit }) => {
@@ -11,6 +13,7 @@ const CommentForm = ({ initial, onSubmit }) => {
   const user = useSelector((state) => state.auth.user);
   const [text, setText] = useState(initial?.text);
   const [file, setFile] = useState("");
+  const [tagUser, setTagUser] = useState("");
   const inputFileRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const inputFileId = useId();
@@ -19,6 +22,9 @@ const CommentForm = ({ initial, onSubmit }) => {
   useEffect(() => {
     setPreviewImage(initial.image);
   }, [initial.image]);
+  useEffect(() => {
+    setTagUser(initial?.tag);
+  }, [initial?.tag]);
 
   useEffect(() => {
     return () => {
@@ -33,10 +39,13 @@ const CommentForm = ({ initial, onSubmit }) => {
       const formData = new FormData();
       formData.append("text", text);
       formData.append("image", file);
+      if (tagUser) formData.append("tag", JSON.stringify(tagUser));
       await onSubmit(formData);
       setPreviewImage("");
       setFile("");
       setText("");
+      setTagUser(null);
+      inputFileRef.current.value = null;
       setLoading(false);
     }
   };
@@ -88,24 +97,39 @@ const CommentForm = ({ initial, onSubmit }) => {
     setPreviewImage("");
     inputFileRef.current.value = null;
   };
+  const handleRemoveTag = (e) => {
+    if (e.key === "Backspace" && !text && tagUser) {
+      setTagUser(null);
+    }
+  };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2" onKeyDown={handleRemoveTag}>
       <Avatar url={user.avatar} size="w-8 h-8 mt-[2px]" />
-      <div className="flex-1">
+      <div className="relative flex-1">
         <div
-          className="relative w-full flex items-center px-2 py-2 dark:bg-dark-light overflow-hidden rounded-lg"
+          className="relative w-full flex px-2 py-2 dark:bg-dark-light overflow-hidden rounded-lg"
           onDrop={(e) => handleDrop(e)}
           onDragOver={handleDrag}
           onDragEnter={handleDrag}
           onDragLeave={handleDragLeave}
         >
-          <TextArea
-            onChange={setText}
-            onPaste={handlePaste}
-            value={text}
-            onEnter={handleSubmit}
-          />
+          {tagUser && (
+            <Link
+              to={`/profile/${tagUser._id}`}
+              className="dark:text-dark-text-bold dark:hover:text-primary mr-1"
+            >
+              @{tagUser.name}
+            </Link>
+          )}
+          <div className="flex-1">
+            <TextArea
+              onChange={setText}
+              onPaste={handlePaste}
+              value={text}
+              onEnter={handleSubmit}
+            />
+          </div>
           <div>
             <div className="absolute right-1 -bottom-3 -translate-y-1/2">
               <label
@@ -118,7 +142,6 @@ const CommentForm = ({ initial, onSubmit }) => {
                   className="absolute invisible"
                   onChange={handleUpLoad}
                   ref={inputFileRef}
-                  // onClick={(e) => (e.target.value = null)}
                 />{" "}
                 <div className="w-[30px] h-[30px] flex justify-center items-center hover-brightness rounded-full">
                   {isDragging ? (
@@ -131,6 +154,14 @@ const CommentForm = ({ initial, onSubmit }) => {
             </div>
           </div>
         </div>
+        {loading && (
+          <>
+            <div className="absolute top-0 right-0 left-0 bottom-0"></div>
+            <div className="mt-2">
+              <SpinnerV2 />
+            </div>
+          </>
+        )}
         {previewImage && (
           <div className="max-w-[120px] relative">
             <div className="max-w-[120px] overflow-hidden rounded-md mt-3 bg-primary/20">

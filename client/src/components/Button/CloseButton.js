@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../Button";
+import Button from "./Button";
 
 const CloseButton = ({ onClick, className, size = "w-7 h-7 text-md" }) => {
   return (

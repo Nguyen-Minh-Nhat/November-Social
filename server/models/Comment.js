@@ -23,6 +23,12 @@ const CommentSchema = new Schema(
         ref: "user",
       },
     ],
+    childComments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "comment",
+      },
+    ],
   },
   { timestamps: true },
 );

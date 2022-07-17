@@ -10,7 +10,7 @@ const RenderPostList = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     let mounted = true;
-    if (mounted) {
+    if (mounted && !(postList?.length > 0)) {
       const getPostList = async (state) => {
         try {
           const res = await postApi.get();

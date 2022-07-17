@@ -8,7 +8,6 @@ const SocketServer = require("./socketServer");
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
 const commentRouter = require("./routes/comment");
-const childCommentRouter = require("./routes/childComment");
 const userRouter = require("./routes/user");
 const chatRouter = require("./routes/chat");
 const { Server } = require("socket.io");
@@ -47,7 +46,6 @@ connectDB();
 app.use("/api/auth", authRouter);
 app.use("/api/post", postRouter);
 app.use("/api/comment", commentRouter);
-app.use("/api/childComment", childCommentRouter);
 app.use("/api/user", userRouter);
 app.use("/api/chat", chatRouter);
 

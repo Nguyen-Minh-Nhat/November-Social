@@ -1,12 +1,13 @@
 const routes = {
+  home: "/",
   auth: "/auth",
   login: "/login",
   register: "/register",
   userActive: "/activate/:data",
-  home: "/",
   friends: "/friends",
   photos: "/photos",
-  Cinema: "/cinema",
+  cinema: "/cinema",
+  chat: "/chat",
 };
 
 export default routes;

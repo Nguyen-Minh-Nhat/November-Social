@@ -1,4 +1,4 @@
-const { default: axiosClient } = require("./axiosClient");
+import axiosClient from "./axiosClient";
 
 const URL = "auth/";
 const authApi = {

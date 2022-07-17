@@ -1,15 +1,27 @@
-import store from "../redux/store";
-import { axiosClientPrivate } from "./axiosClient";
+import { axiosClientPrivate, setHeader } from "./axiosClient";
 
 const URL = "user/";
 const userApi = {
-  getAccessToken: () => {
-    return store.getState().auth.accessToken;
-  },
   searchUsers: async (data) => {
-    const res = await axiosClientPrivate.get(URL + `search/${data}`, {
-      headers: { Authorization: userApi.getAccessToken() },
-    });
+    const res = await axiosClientPrivate.get(
+      URL + `search/${data}`,
+      setHeader(),
+    );
+    return res;
+  },
+  follow: async (id) => {
+    const res = await axiosClientPrivate.patch(
+      URL + `follow/${id}`,
+      {},
+      setHeader(),
+    );
+    return res;
+  },
+  suggestionsUser: async () => {
+    const res = await axiosClientPrivate.get(
+      URL + "suggestionsUser",
+      setHeader(),
+    );
     return res;
   },
 };

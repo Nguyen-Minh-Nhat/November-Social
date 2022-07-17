@@ -1,18 +1,38 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import commentApi from "../../../api/commentApi";
 import postApi from "../../../api/postApi";
-import { checkIncludesCurrentUser } from "../../../functions";
+import { checkIncludesUser } from "../../../functions";
 import { setPostComments, updatePost } from "../../../redux/slices/postSlice";
 import Button from "../../Button";
 import CommentCreate from "../../Comment/CommentCreate";
 import RenderCommentList from "../../Comment/RenderCommentList";
 import Tooltip from "../../Tooltip";
-import LikeButton from "../LikeButton";
+import LikeButton from "../../Button/LikeButton";
 
 const Footer = ({ post }) => {
   const [showComment, setShowComment] = useState(false);
+  const list = useMemo(() => {
+    if (post?.commentsDetail) {
+      const childComments = {};
+      const parentComments = [];
+      post?.commentsDetail.forEach((comment) => {
+        if (!comment?.reply) {
+          parentComments.push(comment);
+        } else {
+          if (childComments[comment.reply])
+            childComments[comment.reply] = [
+              ...childComments[comment.reply],
+              comment,
+            ];
+          else childComments[comment.reply] = [comment];
+        }
+      });
+      return { parentComments, childComments };
+    }
+    return {};
+  }, [post.commentsDetail]);
   const dispatch = useDispatch();
   const handleLike = async () => {
     try {
@@ -62,16 +82,12 @@ const Footer = ({ post }) => {
         <LikeButton
           onClick={handleLike}
           className="shadow dark:hover:text-dark-text-bold"
-          isActive={() => checkIncludesCurrentUser(post.likes)}
+          isActive={() => checkIncludesUser(post.likes)}
         />
       </div>{" "}
       <div className="flex gap-2">
         <span>
-          <span className="hover:text-primary">
-            {post.commentsDetail
-              ? post.commentsDetail.length
-              : post.comments.length}
-          </span>{" "}
+          <span className="hover:text-primary">{post.comments.length}</span>{" "}
           <i className="fa-light fa-comment"></i>
         </span>{" "}
         <span>
@@ -86,7 +102,10 @@ const Footer = ({ post }) => {
       {showComment && (
         <div className="pt-4 border-t dark:border-dark-border flex flex-col gap-4">
           <CommentCreate postId={post._id} postUserId={post.user._id} />
-          <RenderCommentList comments={post?.commentsDetail} />
+          <RenderCommentList
+            comments={list?.parentComments}
+            childComments={list?.childComments}
+          />
         </div>
       )}
     </div>

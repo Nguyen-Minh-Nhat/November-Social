@@ -7,6 +7,7 @@ const MessageSchema = new Schema(
     conversation: { type: mongoose.Types.ObjectId, ref: "conversation" },
     sender: { type: mongoose.Types.ObjectId, ref: "user" },
     recipient: { type: mongoose.Types.ObjectId, ref: "user" },
+    readBy: [{ type: mongoose.Types.ObjectId, ref: "user" }],
     text: String,
     image: String,
     media: Array,

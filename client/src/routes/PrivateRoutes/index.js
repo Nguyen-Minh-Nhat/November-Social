@@ -1,7 +1,6 @@
-import React from "react";
 import PropTypes from "prop-types";
+import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import routes from "../../config/routes";
 
 const PrivateRoutes = ({ isLogged }) => {
   const location = useLocation();
